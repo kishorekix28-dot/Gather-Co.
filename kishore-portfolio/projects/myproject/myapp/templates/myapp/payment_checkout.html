@@ -1,0 +1,23 @@
+{% extends "myapp/base.html" %}
+
+{% block title %}Advance payment | Stock & Reservations{% endblock %}
+{% block main_class %}narrow{% endblock %}
+
+{% block content %}
+    <section class="card">
+        <p class="eyebrow">One last little step</p>
+        <p class="badge">Mock payment · no real money</p>
+        <h1>Advance payment</h1>
+        <p>Booking #{{ booking.id }} · {{ booking.event_name }}</p>
+        <p class="muted">{{ booking.product.name }}, {{ booking.quantity }} item(s), {{ booking.start_date }} through {{ booking.end_date }}</p>
+        <p>Total amount: <strong>₹{{ booking.total_amount }}</strong></p>
+        <p>Advance required (20%): <strong>₹{{ booking.advance_due }}</strong></p>
+        <p>Remaining balance: <strong>₹{{ booking.remaining_amount }}</strong></p>
+        <p class="muted">The demo button records a simulated successful payment and confirms the booking. It does not connect to Razorpay or collect payment details. The item hold expires {{ booking.hold_expires_at }}.</p>
+        <form method="post" action="{% url 'mock-payment' booking.id %}">
+            {% csrf_token %}
+            <button class="button" type="submit">Simulate successful advance payment</button>
+        </form>
+        <p class="muted">Do not enter card details, UPI PINs or CVVs into this demo.</p>
+    </section>
+{% endblock %}

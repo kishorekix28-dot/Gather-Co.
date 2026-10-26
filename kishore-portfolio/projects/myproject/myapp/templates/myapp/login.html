@@ -1,0 +1,42 @@
+{% extends "myapp/base.html" %}
+
+{% block title %}Log in | Stock & Reservations{% endblock %}
+
+{% block content %}
+    <section class="auth-layout">
+        <div class="auth-form">
+        <p class="eyebrow">Your gathering starts here</p>
+        <h1>Welcome back.</h1>
+        <p class="muted">Log in to manage your stock or pick up where your event planning left off.</p>
+        {% if error %}<div class="message error" role="alert">{{ error }}</div>{% endif %}
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ next_url }}">
+            <div class="field">
+                <label for="username">Username</label>
+                <input id="username" name="username" autocomplete="username" required>
+            </div>
+            <div class="field">
+                <label for="password">Password</label>
+                <input id="password" name="password" type="password" autocomplete="current-password" required>
+            </div>
+            <button class="button" type="submit">Log in <span aria-hidden="true">↗</span></button>
+        </form>
+        <p class="muted">New here? <a href="{% url 'signup' %}">Create an account</a>.</p>
+        <details>
+            <summary>Local demo accounts</summary>
+            <p class="muted"><strong>Owner:</strong> demo_owner / DemoOwner123!</p>
+            <p class="muted"><strong>Customer:</strong> demo_customer / DemoCustomer123!</p>
+            <p class="muted">Development only. These demo passwords must not be used in production.</p>
+        </details>
+        </div>
+        <aside class="auth-aside">
+            <div>
+                <span class="auth-aside-mark" aria-hidden="true">✳</span>
+                <h2>Bring your people together.</h2>
+                <p>The little details make the big moments. Find everything you need to make your next gathering feel like you.</p>
+            </div>
+            <div class="auth-aside-bottom">A lovely event begins with a little inspiration.</div>
+        </aside>
+    </section>
+{% endblock %}
