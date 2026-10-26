@@ -1,0 +1,161 @@
+{% extends "myapp/base.html" %}
+
+{% block title %}Dashboard | Stock & Reservations{% endblock %}
+
+{% block content %}
+    <div class="dashboard-heading row">
+        <div>
+            <p class="eyebrow">{{ role }} workspace</p>
+            <h1>Hello, {{ request.user.username }}</h1>
+            <p class="muted">{% if role == 'owner' %}Your inventory and upcoming reservations, all in one place.{% else %}A little planning goes a long way. Here’s your rental overview.{% endif %}</p>
+        </div>
+        {% if role == 'owner' %}
+            <div class="row">
+                <a class="button secondary" href="{% url 'owner-calendar' %}">Availability calendar</a>
+                <a class="button" href="{% url 'add-product' %}">Add stock item</a>
+            </div>
+        {% else %}
+            <a class="button secondary" href="{% url 'home' %}">Browse all items</a>
+        {% endif %}
+    </div>
+
+    {% if role == 'owner' %}
+        <section class="grid section metrics-grid">
+            <article class="card"><span class="muted">Inventory items</span><p class="price">{{ metrics.inventory_count }}</p></article>
+            <article class="card"><span class="muted">Listed items</span><p class="price">{{ metrics.available_inventory_count }}</p></article>
+            <article class="card"><span class="muted">Active bookings</span><p class="price">{{ metrics.active_bookings }}</p></article>
+            <article class="card"><span class="muted">Upcoming events</span><p class="price">{{ metrics.upcoming_events }}</p></article>
+            <article class="card"><span class="muted">Pending requests</span><p class="price">{{ metrics.pending_bookings }}</p></article>
+            <article class="card"><span class="muted">Advance revenue (mock)</span><p class="price">₹{{ metrics.advance_revenue }}</p></article>
+            <article class="card"><span class="muted">Total payments (mock)</span><p class="price">₹{{ metrics.revenue }}</p></article>
+            <article class="card"><span class="muted">Balance payments</span><p class="price">₹{{ metrics.balance_revenue }}</p></article>
+            <article class="card"><span class="muted">Refunds</span><p class="price">₹{{ metrics.refunds }}</p></article>
+            <article class="card"><span class="muted">Advance awaiting payment</span><p class="price">₹{{ metrics.pending_payments }}</p></article>
+        </section>
+        <section class="section">
+            <h2>Your stock</h2>
+            {% if products %}
+                <div class="grid">
+                    {% for product in products %}
+                        <article class="card">
+                            <div class="row">
+                                <h3>{% if product.image_url %}<img src="{{ product.image_url }}" alt="" style="width:48px;height:48px;object-fit:cover;border-radius:8px;vertical-align:middle;">{% endif %} {{ product.name }}</h3>
+                                <span class="badge">Quantity: {{ product.stock }}</span>
+                            </div>
+                            <p class="muted">{{ product.category.name|default:"Uncategorized" }} · {{ product.is_active|yesno:"Listed,Inactive" }}</p>
+                            <p class="muted">{{ product.description|default:"No description provided." }}</p>
+                            <p class="price">₹{{ product.price_per_day }} <span class="muted">per item / day</span></p>
+                            <a class="button secondary" href="{% url 'edit-product' product.id %}">Edit</a>
+                            {% if product.is_active %}
+                                <form class="inline" method="post" action="{% url 'deactivate-product' product.id %}">
+                                    {% csrf_token %}
+                                    <button class="button danger" type="submit">Deactivate</button>
+                                </form>
+                            {% endif %}
+                        </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty">You have not added any stock yet.</div>
+            {% endif %}
+        </section>
+
+        <section class="section">
+            <div class="row">
+                <h2>Bookings</h2>
+                <form method="get" class="row">
+                    <select name="status" aria-label="Filter bookings">
+                        <option value="">All statuses</option>
+                        {% for value, label in status_choices %}
+                            <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                    <select name="period" aria-label="Filter by event date">
+                        <option value="">All dates</option>
+                        <option value="today" {% if period_filter == 'today' %}selected{% endif %}>Today</option>
+                        <option value="upcoming" {% if period_filter == 'upcoming' %}selected{% endif %}>Upcoming</option>
+                        <option value="completed" {% if period_filter == 'completed' %}selected{% endif %}>Completed</option>
+                    </select>
+                    <button class="button secondary" type="submit">Filter</button>
+                </form>
+            </div>
+            {% if bookings %}
+                <div class="stack">
+                    {% for booking in bookings %}
+                        <article class="card">
+                            <div class="row">
+                                <h3>{{ booking.event_name }} · {{ booking.product.name }} <span class="badge">{{ booking.get_status_display }}</span></h3>
+                                <strong>Advance: ₹{{ booking.advance_due }}</strong>
+                            </div>
+                            <p class="muted">{{ booking.customer.username }} · {{ booking.event_type }} · {{ booking.event_location }} · {{ booking.quantity }} item(s), {{ booking.start_date }} through {{ booking.end_date }} ({{ booking.duration_days }} day(s)). Total: ₹{{ booking.total_amount }}. Balance: ₹{{ booking.remaining_amount }}. Payment: {{ booking.payment_status }}.</p>
+                            {% if booking.status == 'pending' %}
+                                <form class="inline" method="post" action="{% url 'reservation-action' booking.id %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="confirm">
+                                    <button class="button" type="submit">Approve request</button>
+                                </form>
+                                <form class="inline" method="post" action="{% url 'reservation-action' booking.id %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="reject">
+                                    <button class="button danger" type="submit">Decline</button>
+                                </form>
+                            {% endif %}
+                            {% if booking.status == 'confirmed' %}<a href="{% url 'receipt' booking.id %}">View receipt</a>{% endif %}
+                        </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty">No reservation requests yet.</div>
+            {% endif %}
+        </section>
+    {% else %}
+        <section class="section">
+            <h2>Available items</h2>
+            {% if products %}
+                <div class="grid">
+                    {% for product in products %}
+                        <article class="card">
+                            <h3>{{ product.name }}</h3>
+                            <p class="muted">{{ product.description|default:"No description provided." }}</p>
+                            <p class="price">₹{{ product.price_per_day }} <span class="muted">per item / day</span></p>
+                            <a class="button" href="{% url 'book-product' product.id %}">Choose dates</a>
+                        </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty">There are no items to reserve yet.</div>
+            {% endif %}
+        </section>
+
+        <section class="section">
+            <h2>Your reservations</h2>
+            {% if bookings %}
+                <div class="stack">
+                    {% for booking in bookings %}
+                        <article class="card">
+                            <div class="row">
+                                <h3>{{ booking.event_name }} · {{ booking.product.name }} <span class="badge">{{ booking.get_status_display }}</span></h3>
+                                <strong>Advance: ₹{{ booking.advance_due }}</strong>
+                            </div>
+                            <p class="muted">{{ booking.event_type }} · {{ booking.event_location }} · {{ booking.quantity }} item(s), {{ booking.start_date }} through {{ booking.end_date }} ({{ booking.duration_days }} day(s)) from {{ booking.owner.username }}. Total: ₹{{ booking.total_amount }}. Balance: ₹{{ booking.remaining_amount }}. Payment: {{ booking.payment_status }}.</p>
+                            {% if booking.status == 'payment_pending' %}
+                                <a class="button" href="{% url 'payment-checkout' booking.id %}">Pay advance (demo)</a>
+                            {% elif booking.status == 'confirmed' %}
+                                <a class="button secondary" href="{% url 'receipt' booking.id %}">View receipt</a>
+                            {% endif %}
+                            {% if booking.status == 'pending' or booking.status == 'confirmed' %}
+                                <form method="post" action="{% url 'cancel-booking' booking.id %}">
+                                    {% csrf_token %}
+                                    <button class="button danger" type="submit">Cancel reservation</button>
+                                </form>
+                            {% endif %}
+                        </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty">You have not made a reservation yet.</div>
+            {% endif %}
+        </section>
+        <p class="muted section">An advance amount is calculated for each reservation, but payment is not collected by this demo.</p>
+    {% endif %}
+{% endblock %}
