@@ -29,13 +29,13 @@ From the `myproject` directory:
 
 ## Deploy on Render
 
-Set the service root directory to `myproject`, then use this build command so new and existing deployments apply database migrations:
+Set the service root directory to `myproject`, then use this build command to collect static assets and apply database migrations:
 
 ```sh
-pip install -r requirements.txt && python manage.py migrate --noinput
+pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate --noinput
 ```
 
-Use `gunicorn myproject.wsgi:application` as the start command. Set `DJANGO_SECRET_KEY` to a private value and `DJANGO_ALLOWED_HOSTS` to include `gatherinventory.onrender.com`. `DJANGO_DEBUG` defaults to `false`. After changing the build command, deploy the latest commit; migrations run during the build before the service starts.
+Use `gunicorn myproject.wsgi:application` as the start command. WhiteNoise serves the collected static files in production. Set `DJANGO_SECRET_KEY` to a private value and `DJANGO_ALLOWED_HOSTS` to include `gatherinventory.onrender.com`. `DJANGO_DEBUG` defaults to `false`. Deploy the latest commit after updating the Render build command.
 
 ## Proposed improvement
 

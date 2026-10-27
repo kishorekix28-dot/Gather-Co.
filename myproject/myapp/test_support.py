@@ -11,6 +11,14 @@ from .models import ErrorCode, FAQ, SupportTicket
 
 
 class SupportPageTests(TestCase):
+    def test_stylesheet_urls_are_absolute_on_home_and_support_pages(self):
+        for path in ('/', '/faqs/'):
+            with self.subTest(path=path):
+                response = self.client.get(path)
+                self.assertEqual(response.status_code, 200)
+                self.assertContains(response, 'href="/static/myapp/css/site.css"')
+                self.assertContains(response, 'href="/static/myapp/css/support.css"')
+
     def test_seeded_faqs_and_error_codes_are_available(self):
         self.assertGreaterEqual(FAQ.objects.filter(is_active=True).count(), 10)
         self.assertGreaterEqual(ErrorCode.objects.filter(is_active=True).count(), 8)
