@@ -5,12 +5,7 @@
 			"label": "Django: Run development server",
 			"type": "shell",
 			"command": "C:\\Users\\KISHORE\\Desktop\\kishore-portfolio\\projects\\.venv\\Scripts\\python.exe",
-			"args": [
-				"myproject\\manage.py",
-				"runserver",
-				"--insecure",
-				"127.0.0.1:8000"
-			],
+			"args": ["myproject\\manage.py", "runserver", "--insecure", "127.0.0.1:8000"],
 			"isBackground": true,
 			"problemMatcher": []
 		},
@@ -18,117 +13,8 @@
 			"label": "Django: Run local server",
 			"type": "shell",
 			"command": "C:\\Users\\KISHORE\\Desktop\\kishore-portfolio\\projects\\.venv\\Scripts\\python.exe",
-			"args": [
-				"myproject\\manage.py",
-				"runserver",
-				"--insecure",
-				"127.0.0.1:8000"
-			],
+			"args": ["myproject\\manage.py", "runserver", "--insecure", "127.0.0.1:8000"],
 			"isBackground": true,
-			"problemMatcher": []
-		},
-		{
-			"label": "Inspect local Git repository",
-			"type": "shell",
-			"command": "git",
-			"args": [
-				"status",
-				"--short",
-				"--branch"
-			],
-			"isBackground": false,
-			"problemMatcher": []
-		},
-		{
-			"label": "Inspect repository target and diff",
-			"type": "shell",
-			"command": "git",
-			"args": [
-				"remote",
-				"-v"
-			],
-			"isBackground": false,
-			"problemMatcher": []
-		},
-		{
-			"label": "Review changes before GitHub push",
-			"type": "shell",
-			"command": "git",
-			"args": [
-				"diff",
-				"--stat"
-			],
-			"isBackground": false,
-			"problemMatcher": []
-		},
-		{
-			"label": "Check patch whitespace",
-			"type": "shell",
-			"command": "git",
-			"args": [
-				"diff",
-				"--check"
-			],
-			"isBackground": false,
-			"problemMatcher": []
-		},
-		{
-			"label": "Inspect files in pending change",
-			"type": "shell",
-			"command": "git",
-			"args": [
-				"diff",
-				"--name-only"
-			],
-			"isBackground": false,
-			"problemMatcher": []
-		},
-		{
-			"label": "Inspect README and settings diff",
-			"type": "shell",
-			"command": "git",
-			"args": [
-				"diff",
-				"--",
-				"README.md",
-				"kishore-portfolio/projects/myproject/myproject/settings.py"
-			],
-			"isBackground": false,
-			"problemMatcher": []
-		},
-		{
-			"label": "Verify no env file changes",
-			"type": "shell",
-			"command": "git",
-			"args": [
-				"diff",
-				"--",
-				"*.env",
-				".env.example"
-			],
-			"isBackground": false,
-			"problemMatcher": []
-		},
-		{
-			"label": "Confirm current branch",
-			"type": "shell",
-			"command": "git",
-			"args": [
-				"branch",
-				"--show-current"
-			],
-			"isBackground": false,
-			"problemMatcher": []
-		},
-		{
-			"label": "Stage website updates",
-			"type": "shell",
-			"command": "git",
-			"args": [
-				"add",
-				"-A"
-			],
-			"isBackground": false,
 			"problemMatcher": []
 		}
 	]
