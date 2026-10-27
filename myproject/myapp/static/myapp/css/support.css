@@ -47,6 +47,10 @@
 .assistant-note { align-self: flex-start; background: #fff1e9; color: #754d3b; }
 .assistant-rating { display: flex; gap: .45rem; }
 .assistant-rating button { padding: .35rem .6rem; border: 1px solid var(--line); border-radius: 99px; background: white; color: var(--green); cursor: pointer; }
+.assistant-suggestions { display: flex; align-items: flex-start; flex-direction: column; gap: .4rem; }
+.assistant-suggestions span { color: var(--muted); font-size: .78rem; }
+.assistant-suggestions button { max-width: 100%; padding: .5rem .7rem; border: 1px solid var(--line); border-radius: 12px; background: #fff; color: var(--green); font: inherit; font-size: .82rem; text-align: left; cursor: pointer; }
+.assistant-suggestions button:hover { border-color: var(--green); background: #f0f3ec; }
 .assistant-form { display: grid; gap: .55rem; padding: .8rem; border-top: 1px solid var(--line); }
 .assistant-form > input, .assistant-compose input { width: 100%; min-width: 0; padding: .7rem .8rem; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
 .assistant-compose { display: flex; gap: .5rem; }

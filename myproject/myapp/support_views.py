@@ -27,6 +27,7 @@ STOP_WORDS = {
     'please', 'site', 'the', 'there', 'this', 'to', 'website', 'what', 'when',
     'where', 'which', 'with', 'you', 'your',
 }
+VAGUE_TERMS = {'doubt', 'help', 'issue', 'problem', 'question', 'questions'}
 TERM_GROUPS = (
     frozenset({'reserve', 'reservation', 'reservations', 'booking', 'bookings', 'book', 'rent', 'rental', 'rentals'}),
     frozenset({'item', 'items', 'product', 'products', 'inventory', 'equipment', 'catalog', 'catalogue'}),
@@ -104,8 +105,10 @@ def _normalized_terms(text):
 def _inventory_answer(message):
     raw_terms = set(re.findall(r'[a-z0-9]+', message.lower()))
     inventory_terms = TERM_GROUPS[1]
-    request_terms = {'what', 'which', 'show', 'list', 'offer', 'available', 'have'}
-    if not raw_terms.intersection(inventory_terms):
+    rental_terms = {'rent', 'rental', 'rentals'}
+    request_terms = {'what', 'which', 'show', 'list', 'offer', 'available', 'have', 'can'}
+    asks_about_items = bool(raw_terms.intersection(inventory_terms | rental_terms))
+    if not asks_about_items:
         return None
     if not raw_terms.intersection(request_terms) and not raw_terms.intersection({'all', 'catalog', 'catalogue'}):
         return None
@@ -144,17 +147,16 @@ def _inventory_answer(message):
     return response
 
 
-def _faq_answer(message):
+def _rank_faqs(message):
     query_words = {
         word for word in re.findall(r'[a-z0-9]+', message.lower())
         if len(word) > 1 and word not in STOP_WORDS
     }
     query_terms = _normalized_terms(message)
     if not query_words:
-        return None
+        return []
 
-    best_faq = None
-    best_score = 0
+    ranked_faqs = []
     for faq in FAQ.objects.filter(is_active=True):
         faq_text = f'{faq.question} {faq.keywords}'
         faq_words = set(re.findall(r'[a-z0-9]+', faq_text.lower()))
@@ -162,9 +164,36 @@ def _faq_answer(message):
         exact_matches = len(query_words & faq_words)
         normalized_matches = len(query_terms & faq_terms)
         score = (2 * exact_matches + normalized_matches) / (3 * len(query_words))
-        if score > best_score:
-            best_faq, best_score = faq, score
-    return best_faq if best_score >= 0.5 else None
+        if score:
+            ranked_faqs.append((faq, score))
+    return sorted(ranked_faqs, key=lambda match: match[1], reverse=True)
+
+
+def _faq_answer(message):
+    ranked_faqs = _rank_faqs(message)
+    if not ranked_faqs or ranked_faqs[0][1] < 0.5:
+        return None
+    if len(ranked_faqs) > 1 and ranked_faqs[0][1] - ranked_faqs[1][1] < 0.15:
+        return None
+    return ranked_faqs[0][0]
+
+
+def _faq_suggestions(message):
+    ranked_faqs = _rank_faqs(message)
+    suggestions = [faq.question for faq, _score in ranked_faqs[:3]]
+    if suggestions:
+        return suggestions
+
+    starter_questions = (
+        'How do I make a reservation?',
+        'What items can I rent?',
+        'How do payments work?',
+    )
+    active_faqs = FAQ.objects.filter(is_active=True, question__in=starter_questions)
+    return [
+        question for question in starter_questions
+        if active_faqs.filter(question=question).exists()
+    ]
 
 
 def _save_chat_log(document):
@@ -210,6 +239,9 @@ def chat_api(request):
     error = _error_code_answer(message)
     inventory_answer = None if error else _inventory_answer(message)
     faq = None if error or inventory_answer else _faq_answer(message)
+    ranked_faqs = _rank_faqs(message) if not error and not inventory_answer and not faq else []
+    suggestions = []
+    needs_clarification = False
     ticket = None
     if error:
         answer = f'Error {error.code} — {error.title}. {error.description} {error.resolution}'
@@ -217,6 +249,17 @@ def chat_api(request):
         answer = inventory_answer
     elif faq:
         answer = faq.answer
+    elif (
+        not _normalized_terms(message)
+        or _normalized_terms(message) <= VAGUE_TERMS
+        or ranked_faqs and ranked_faqs[0][1] >= 0.5
+    ):
+        needs_clarification = True
+        suggestions = _faq_suggestions(message)
+        answer = (
+            'I can help with this website. Could you clarify what you need? '
+            'Choose a suggestion below or add a little more detail.'
+        )
     else:
         ticket = SupportTicket.objects.create(
             subject=message[:120],
@@ -245,6 +288,8 @@ def chat_api(request):
         'answer': answer,
         'conversation_id': conversation_id,
         'ticket_id': ticket.pk if ticket else None,
+        'needs_clarification': needs_clarification,
+        'suggestions': suggestions,
         'log_id': log_id,
         'warning': log_warning,
     })

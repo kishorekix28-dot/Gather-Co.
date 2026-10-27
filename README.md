@@ -8,7 +8,8 @@ Gather is a responsive event-rental and booking site with an FAQ-grounded suppor
 
 - Rental browsing, sign-in, bookings, owner dashboard, and simulated payment flows.
 - Responsive FAQ, error-code, health, and ticket pages; shared assistant widget across pages.
-- Eleven seeded FAQs and eight seeded error codes, including `GAT-001` for a reservation conflict.
+- Fourteen seeded FAQs and eight seeded error codes, including `GAT-001` for a reservation conflict.
+- The assistant answers common reservation, inventory, account, and payment questions from FAQ data and the live inventory catalog. If a website question is vague or could mean several things, it asks for clarification and offers clickable suggested questions before creating a support ticket.
 - Custom 404 and 500 pages with an option to ask the assistant.
 - SQL-backed support tickets and FAQs/error codes; MongoDB-backed chat logs and feedback.
 - Request method/path/status/duration logging and `/health/` dependency checks.

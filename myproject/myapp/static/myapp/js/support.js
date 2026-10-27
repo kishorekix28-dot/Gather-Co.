@@ -60,6 +60,26 @@
             }
             feed.appendChild(controls);
         };
+        const addSuggestions = (suggestions) => {
+            if (!suggestions.length) return;
+            const controls = document.createElement('div');
+            controls.className = 'assistant-suggestions';
+            const label = document.createElement('span');
+            label.textContent = 'Try asking:';
+            controls.appendChild(label);
+            suggestions.forEach((question) => {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.textContent = question;
+                button.addEventListener('click', () => {
+                    messageInput.value = question;
+                    form.requestSubmit();
+                });
+                controls.appendChild(button);
+            });
+            feed.appendChild(controls);
+            feed.scrollTop = feed.scrollHeight;
+        };
 
         toggle.addEventListener('click', () => setOpen(panel.hidden));
         closeButton.addEventListener('click', () => setOpen(false));
@@ -97,7 +117,11 @@
                 if (result.ticket_id) {
                     addMessage(`Support ticket #${result.ticket_id} was created.`, 'assistant-note');
                 }
-                feedbackButtons(logId);
+                if (result.needs_clarification) {
+                    addSuggestions(result.suggestions || []);
+                } else {
+                    feedbackButtons(logId);
+                }
                 status.textContent = result.warning || '';
             } catch (error) {
                 addMessage(error.message || 'The assistant could not connect. Please try again.', 'assistant-note');

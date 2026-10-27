@@ -74,6 +74,30 @@ class AssistantApiTests(TestCase):
         self.assertIsNone(response.json()['ticket_id'])
         self.assertIn('Banquet Chairs', response.json()['answer'])
 
+    def test_assistant_suggests_questions_for_vague_website_doubt(self):
+        with patch('myapp.support_views._save_chat_log', return_value=('log-clarify', None)):
+            response = self.client.post(
+                '/api/chat/',
+                data=json.dumps({'message': 'i have a doubt'}),
+                content_type='application/json',
+            )
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.json()['needs_clarification'])
+        self.assertIsNone(response.json()['ticket_id'])
+        self.assertIn('What items can I rent?', response.json()['suggestions'])
+
+    def test_assistant_asks_which_booking_help_is_needed(self):
+        with patch('myapp.support_views._save_chat_log', return_value=('log-booking', None)):
+            response = self.client.post(
+                '/api/chat/',
+                data=json.dumps({'message': 'booking?'}),
+                content_type='application/json',
+            )
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.json()['needs_clarification'])
+        self.assertGreaterEqual(len(response.json()['suggestions']), 2)
+        self.assertIsNone(response.json()['ticket_id'])
+
     def test_assistant_explains_an_error_code(self):
         with patch('myapp.support_views._save_chat_log', return_value=('log-2', None)):
             response = self.client.post(
