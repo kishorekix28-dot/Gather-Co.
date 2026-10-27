@@ -26,6 +26,16 @@ From the `myproject` directory:
 
 `MONGODB_URI` must point to a reachable MongoDB instance for chat history and feedback persistence. The seeded FAQ and error-code records are installed by the initial Django migration. `DJANGO_DEBUG` should be `false` in production, and `DJANGO_ALLOWED_HOSTS` should contain the deployed host names.
 
+## Deploy on Render
+
+Set the service root directory to `myproject`, then use this build command so new and existing deployments apply database migrations:
+
+```sh
+pip install -r requirements.txt && python manage.py migrate --noinput
+```
+
+Use `gunicorn myproject.wsgi:application` as the start command. Set `DJANGO_SECRET_KEY` to a private value and `DJANGO_ALLOWED_HOSTS` to include `gatherinventory.onrender.com`. `DJANGO_DEBUG` defaults to `false`. After changing the build command, deploy the latest commit; migrations run during the build before the service starts.
+
 ## Proposed improvement
 
 Add a staff support inbox with assignment, ticket replies, and email notifications so the team can resolve assistant-created tickets without relying on manual database inspection.
