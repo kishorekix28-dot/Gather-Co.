@@ -5,7 +5,12 @@
 			"label": "Django: Run development server",
 			"type": "shell",
 			"command": "C:\\Users\\KISHORE\\Desktop\\kishore-portfolio\\projects\\.venv\\Scripts\\python.exe",
-			"args": ["myproject\\manage.py", "runserver", "--insecure", "127.0.0.1:8000"],
+			"args": [
+				"myproject\\manage.py",
+				"runserver",
+				"--insecure",
+				"127.0.0.1:8000"
+			],
 			"isBackground": true,
 			"problemMatcher": []
 		},
@@ -13,8 +18,73 @@
 			"label": "Django: Run local server",
 			"type": "shell",
 			"command": "C:\\Users\\KISHORE\\Desktop\\kishore-portfolio\\projects\\.venv\\Scripts\\python.exe",
-			"args": ["myproject\\manage.py", "runserver", "--insecure", "127.0.0.1:8000"],
+			"args": [
+				"myproject\\manage.py",
+				"runserver",
+				"--insecure",
+				"127.0.0.1:8000"
+			],
 			"isBackground": true,
+			"problemMatcher": []
+		},
+		{
+			"label": "Run Gather local server",
+			"type": "shell",
+			"command": "C:\\Users\\KISHORE\\Desktop\\kishore-portfolio\\projects\\.venv\\Scripts\\python.exe",
+			"args": [
+				"myproject\\manage.py",
+				"runserver",
+				"--insecure",
+				"127.0.0.1:8000"
+			],
+			"isBackground": true,
+			"problemMatcher": []
+		},
+		{
+			"label": "Check Django project configuration",
+			"type": "shell",
+			"command": "C:\\Users\\KISHORE\\Desktop\\kishore-portfolio\\projects\\.venv\\Scripts\\python.exe",
+			"args": [
+				"myproject\\manage.py",
+				"check"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Run all Django tests",
+			"type": "shell",
+			"command": "C:\\Users\\KISHORE\\Desktop\\kishore-portfolio\\projects\\.venv\\Scripts\\python.exe",
+			"args": [
+				"myproject\\manage.py",
+				"test"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Run all app test modules",
+			"type": "shell",
+			"command": "C:\\Users\\KISHORE\\Desktop\\kishore-portfolio\\projects\\.venv\\Scripts\\python.exe",
+			"args": [
+				"myproject\\manage.py",
+				"test",
+				"myapp.tests",
+				"myapp.test_support"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Confirm server running and worktree changes",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"status",
+				"--short",
+				"--branch"
+			],
+			"isBackground": false,
 			"problemMatcher": []
 		}
 	]
