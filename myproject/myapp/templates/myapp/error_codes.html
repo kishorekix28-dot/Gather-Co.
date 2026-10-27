@@ -1,0 +1,23 @@
+{% extends "myapp/base.html" %}
+
+{% block title %}Error code guide · Gather{% endblock %}
+
+{% block content %}
+<section class="support-hero">
+    <p class="eyebrow">Troubleshooting</p>
+    <h1>Understand the message. Get moving again.</h1>
+    <p class="muted">Look up common response codes and the Gather reservation-specific code.</p>
+</section>
+<section class="support-card error-list">
+    {% for item in error_codes %}
+        <article class="error-item">
+            <span class="error-code">{{ item.code }}</span>
+            <div><h2>{{ item.title }}</h2><p>{{ item.description }}</p><p><strong>What to do:</strong> {{ item.resolution }}</p></div>
+        </article>
+    {% endfor %}
+</section>
+<section class="support-cta">
+    <div><h2>Still stuck?</h2><p class="muted">Ask the assistant to explain a code or create a support ticket.</p></div>
+    <button class="button open-assistant" type="button">Ask the assistant</button>
+</section>
+{% endblock %}

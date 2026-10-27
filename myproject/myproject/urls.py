@@ -24,5 +24,8 @@ urlpatterns = [
     path('', include('myapp.urls')),
 ]
 
+handler404 = 'myapp.support_views.page_not_found'
+handler500 = 'myapp.support_views.server_error'
+
 if settings.DEBUG:
     urlpatterns += staticfiles_urlpatterns()

@@ -1,0 +1,15 @@
+{% extends "myapp/base.html" %}
+
+{% block title %}Page not found · Gather{% endblock %}
+
+{% block content %}
+<section class="support-hero error-page">
+    <p class="eyebrow">Error 404</p>
+    <h1>We couldn't find that page.</h1>
+    <p class="muted">The page may have moved or the address may be mistyped.</p>
+    <div class="hero-actions">
+        <a class="button" href="{% url 'home' %}">Back to home</a>
+        <button class="button secondary open-assistant" type="button">Ask the assistant</button>
+    </div>
+</section>
+{% endblock %}

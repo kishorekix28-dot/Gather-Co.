@@ -1,9 +1,16 @@
 from django.urls import path
 
-from . import views
+from . import support_views, views
 
 urlpatterns = [
     path('', views.home, name='home'),
+    path('faqs/', support_views.faq_page, name='faq-page'),
+    path('error-codes/', support_views.error_codes_page, name='error-codes'),
+    path('health/', support_views.health_page, name='health'),
+    path('my-tickets/', support_views.tickets_page, name='my-tickets'),
+    path('api/chat/', support_views.chat_api, name='chat-api'),
+    path('api/feedback/', support_views.feedback_api, name='feedback-api'),
+    path('api/weather/', support_views.weather_api, name='weather-api'),
     path('inventory/', views.home, name='inventory-list'),
     path('signup/', views.sign_up, name='signup'),
     path('register/', views.sign_up, name='register'),

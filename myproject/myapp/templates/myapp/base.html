@@ -10,6 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'myapp/css/site.css' %}">
+    <link rel="stylesheet" href="{% static 'myapp/css/support.css' %}">
 </head>
 <body>
     <header class="site-header">
@@ -19,8 +20,11 @@
         </a>
         <nav class="nav" aria-label="Main navigation">
             <a class="nav-link" href="{% url 'home' %}#inventory">Explore rentals</a>
+            <a class="nav-link" href="{% url 'faq-page' %}">FAQs</a>
+            <a class="nav-link" href="{% url 'error-codes' %}">Error help</a>
             {% if request.user.is_authenticated %}
                 <a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a>
+                <a class="nav-link" href="{% url 'my-tickets' %}">My tickets</a>
                 <span class="user-chip">{{ request.user.username }}</span>
                 <form method="post" action="{% url 'logout' %}">
                     {% csrf_token %}
@@ -45,8 +49,34 @@
     <footer class="site-footer">
         <a class="brand footer-brand" href="{% url 'home' %}"><span class="brand-mark" aria-hidden="true">g</span><span>gather<span class="brand-dot">.</span></span></a>
         <span>Thoughtful details for gatherings worth remembering.</span>
-        <span class="footer-note">Demo payments are simulated.</span>
+        <span class="footer-note"><a href="{% url 'health' %}">Service health</a> · Demo payments are simulated.</span>
     </footer>
+    <section class="assistant" aria-label="Support assistant">
+        <div class="assistant-panel" id="assistant-panel" hidden>
+            <div class="assistant-heading">
+                <div><strong>Gather assistant</strong><span>Answers from our help articles</span></div>
+                <button class="assistant-close" type="button" aria-label="Close assistant">×</button>
+            </div>
+            <div class="assistant-feed" id="assistant-feed" aria-live="polite">
+                <p class="assistant-reply">Hi! Ask me about rentals, reservations, payments, or an error code.</p>
+            </div>
+            <form class="assistant-form" id="assistant-form" data-chat-url="{% url 'chat-api' %}" data-feedback-url="{% url 'feedback-api' %}">
+                {% csrf_token %}
+                <label class="sr-only" for="assistant-email">Email for support follow-up</label>
+                <input id="assistant-email" type="email" placeholder="Email for ticket follow-up (optional)" maxlength="254">
+                <label class="sr-only" for="assistant-message">Your question</label>
+                <div class="assistant-compose">
+                    <input id="assistant-message" type="text" placeholder="Ask a question..." maxlength="1000" required>
+                    <button class="button" type="submit">Send</button>
+                </div>
+            </form>
+            <p class="assistant-feedback" id="assistant-feedback" role="status"></p>
+        </div>
+        <button class="assistant-toggle" id="assistant-toggle" type="button" aria-expanded="false" aria-controls="assistant-panel">
+            <span aria-hidden="true">✦</span> Ask the assistant
+        </button>
+    </section>
     {% block extra_scripts %}{% endblock %}
+    <script src="{% static 'myapp/js/support.js' %}" defer></script>
 </body>
 </html>
