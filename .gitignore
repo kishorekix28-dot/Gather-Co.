@@ -1,10 +1,10 @@
 .env
-.env.*
-!.env.example
-__pycache__/
-*.py[cod]
-*.log
-*.sqlite3
 .venv/
 venv/
-myproject/staticfiles/
+__pycache__/
+*.py[cod]
+db.sqlite3
+staticfiles/
+logs/
+.pytest_cache/
+.coverage

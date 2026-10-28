@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: gathers-and-co
+    runtime: static
+    buildCommand: echo "Static site ready"
+    staticPublishPath: ./static
