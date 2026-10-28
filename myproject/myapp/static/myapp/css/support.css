@@ -58,6 +58,35 @@
 .assistant-feedback { min-height: 0; margin: 0; padding: 0 .85rem .55rem; color: var(--muted); font-size: .78rem; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; clip-path: inset(50%); }
 
+.support-card {
+    border-color: rgb(116 56 75 / 11%);
+    background: rgb(255 253 249 / 88%);
+}
+.faq-item { border-top-color: #efdfd6; }
+.faq-item summary:hover { color: #a65356; }
+.error-code {
+    background: #f5e4d3;
+    color: #74384b;
+}
+.support-cta {
+    background: linear-gradient(120deg, #f7e9dc, #f4e4dc);
+}
+.health-ok { color: #687d54; }
+.ticket-status { background: #f5e7d9; color: #74384b; }
+.assistant-toggle {
+    background: linear-gradient(135deg, #854253, #6d3347);
+    box-shadow: 0 12px 30px rgb(81 38 52 / 28%);
+}
+.assistant-toggle span { color: #f3d9a2; }
+.assistant-heading {
+    background: linear-gradient(120deg, #482632, #824553);
+}
+.assistant-reply { background: #f8eee5; }
+.assistant-question { background: #74384b; }
+.assistant-note { background: #fbefe4; color: #754d3b; }
+.assistant-rating button, .assistant-suggestions button { color: #74384b; }
+.assistant-suggestions button:hover { border-color: #bd806d; background: #fbf1e8; }
+
 @media (max-width: 760px) {
     .support-layout { grid-template-columns: 1fr; }
     .support-hero { margin-bottom: 1.8rem; }

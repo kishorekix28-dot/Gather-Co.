@@ -5,7 +5,7 @@
 {% block content %}
     <section class="hero">
         <div class="hero-copy">
-        <p class="eyebrow">Gather beautifully</p>
+        <p class="eyebrow">Weddings, birthdays & celebrations</p>
         <h1>Make room for moments that matter.</h1>
         <p>Thoughtfully chosen event essentials, ready when your celebration is. Find the pieces that bring your gathering to life.</p>
         {% if request.user.is_authenticated %}
@@ -19,16 +19,31 @@
         </div>
         <div class="hero-art" aria-hidden="true">
             <div class="hero-circle">✳</div>
-            <div class="hero-note"><span>✦</span><span><strong>Made for gathering</strong>Little details, lovely memories</span></div>
+            <div class="hero-note"><span>✦</span><span><strong>Made for the moment</strong>Little details, lovely memories</span></div>
         </div>
+    </section>
+
+    <section class="event-benefits" aria-label="Rental highlights">
+        <article class="event-benefit">
+            <span class="event-benefit-mark" aria-hidden="true">01</span>
+            <div><strong>Made for your kind of gathering</strong><p>Browse thoughtful essentials for celebrations big and small.</p></div>
+        </article>
+        <article class="event-benefit">
+            <span class="event-benefit-mark" aria-hidden="true">02</span>
+            <div><strong>Know the price up front</strong><p>Compare clear per-item, per-day rental prices.</p></div>
+        </article>
+        <article class="event-benefit">
+            <span class="event-benefit-mark" aria-hidden="true">03</span>
+            <div><strong>Plan around your date</strong><p>Choose your dates when you request a reservation.</p></div>
+        </article>
     </section>
 
     <section id="inventory">
         <div class="section-heading">
             <div>
                 <p class="eyebrow">The good stuff</p>
-                <h2>Find your finishing touches</h2>
-                <p class="muted">Everything you need to host with ease, all in one place.</p>
+                <h2>Bring your celebration to life</h2>
+                <p class="muted">Thoughtful event essentials, ready for the moments you’re planning.</p>
             </div>
             <span class="muted">{{ products|length }} curated essentials</span>
         </div>
@@ -56,10 +71,11 @@
             <button class="button" type="submit">Search items</button>
         </form>
         {% if products %}
-            <div class="grid">
+            <div class="grid product-grid">
                 {% for product in products %}
                     <article class="card product-card">
                         <div class="product-image product-image-{{ product.category.name|slugify }}">
+                            {% if product.category %}<span class="product-category-tag">{{ product.category.name }}</span>{% endif %}
                             {% if product.image_url %}
                                 <img src="{{ product.image_url }}" alt="{{ product.name }}" loading="lazy">
                             {% else %}
@@ -264,7 +280,6 @@
                             <h3>{{ product.name }}</h3>
                             <span class="badge">Stock: {{ product.stock }}</span>
                         </div>
-                        {% if product.category %}<span class="badge">{{ product.category.name }}</span>{% endif %}
                         <p class="muted">{{ product.description|default:"No description provided." }}</p>
                         <p class="price">₹{{ product.price_per_day }} <span class="muted">per item / day</span></p>
                         {% if product.security_deposit %}<p class="muted">Security deposit: ₹{{ product.security_deposit }}</p>{% endif %}
