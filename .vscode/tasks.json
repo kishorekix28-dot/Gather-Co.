@@ -98,6 +98,28 @@
 			],
 			"isBackground": false,
 			"problemMatcher": []
+		},
+		{
+			"label": "Run Django system check",
+			"type": "shell",
+			"command": "cmd",
+			"args": [
+				"/c",
+				"cd /d C:/Users/KISHORE/Desktop/Gather/myproject && C:/Users/KISHORE/Desktop/Gather/.venv/Scripts/python.exe --version && C:/Users/KISHORE/Desktop/Gather/.venv/Scripts/python.exe manage.py check"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Django check via Python",
+			"type": "shell",
+			"command": "C:/Users/KISHORE/Desktop/Gather/.venv/Scripts/python.exe",
+			"args": [
+				"-c",
+				"import os, runpy, sys; os.chdir('C:/Users/KISHORE/Desktop/Gather/myproject'); print('Python', sys.version.split()[0]); sys.argv = ['manage.py', 'check']; runpy.run_path('manage.py', run_name='__main__')"
+			],
+			"isBackground": false,
+			"problemMatcher": []
 		}
 	]
 }
