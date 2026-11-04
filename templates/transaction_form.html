@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Record stock movement{% endblock %}
+{% block content %}
+<div class="row justify-content-center"><div class="col-xl-8">
+<nav class="breadcrumb"><a href="{% url 'inventory:transaction_list' %}">Transactions</a>&nbsp;/&nbsp;<span class="text-muted">Record movement</span></nav>
+<div class="page-header"><div><h1>Record stock movement</h1><p>Every movement is logged. Stock can never go below zero.</p></div></div>
+<form method="post" novalidate data-loading class="card" data-testid="movement-form">{% csrf_token %}
+  <div class="card-body">
+    {% include "partials/form_errors.html" %}
+    <div class="row g-3">
+      {% include "partials/field.html" with field=form.product col="col-md-8" %}
+      {% include "partials/field.html" with field=form.transaction_type col="col-md-4" %}
+      {% include "partials/field.html" with field=form.quantity col="col-md-4" %}
+      <div class="col-md-8" data-only-in><div class="row g-3">
+        {% include "partials/field.html" with field=form.supplier col="col-md-7" %}
+        {% include "partials/field.html" with field=form.unit_cost col="col-md-5" %}
+      </div></div>
+      {% include "partials/field.html" with field=form.reference col="col-md-6" %}
+      {% include "partials/field.html" with field=form.note col="col-md-6" %}
+    </div>
+    {% if not is_admin_user %}<p class="small text-muted mt-3 mb-0"><i class="bi bi-info-circle"></i> Stock adjustments are available to administrators.</p>{% endif %}
+  </div>
+  <div class="card-body border-top d-flex justify-content-end gap-2">
+    <a class="btn btn-light" href="{% url 'inventory:transaction_list' %}">Cancel</a>
+    <button class="btn btn-primary" type="submit"><i class="bi bi-check2"></i> Record movement</button>
+  </div>
+</form>
+</div></div>
+{% endblock %}

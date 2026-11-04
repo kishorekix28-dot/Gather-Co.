@@ -1,0 +1,26 @@
+<div id="assistant-widget" data-chat-url="/assistant/chat/" data-history-url="/assistant/history/" data-feedback-url="/assistant/feedback/">
+  <form class="d-none" aria-hidden="true">{% csrf_token %}</form>
+  <button class="chat-launcher" id="chatLauncher" type="button" aria-label="Open assistant" aria-expanded="false" aria-controls="chatWindow" data-testid="chat-launcher">
+    <span class="pulse"></span><i class="bi bi-chat-dots-fill" id="chatLauncherIcon"></i>
+  </button>
+  <section class="chat-window" id="chatWindow" role="dialog" aria-label="Inventory assistant" data-testid="chat-window">
+    <header class="chat-head">
+      <span class="bot"><i class="bi bi-robot"></i></span>
+      <div><h2>StockPilot Assistant</h2><small><i class="bi bi-circle-fill text-success" style="font-size:.5rem"></i> Answers from our FAQ &amp; help database</small></div>
+      <button type="button" class="btn-close btn-close-white" id="chatClose" aria-label="Close assistant"></button>
+    </header>
+    <div class="chat-body" id="chatBody" aria-live="polite">
+      <div class="msg msg-bot">Hi! I can help with products, stock movements, suppliers, reports and error codes. What do you need?</div>
+      <div class="chat-suggestions" id="chatSuggestions">
+        <button type="button">How do I add a product?</button>
+        <button type="button">How do I update stock?</button>
+        <button type="button">How do I check low-stock products?</button>
+        <button type="button">What does error 404 mean?</button>
+      </div>
+    </div>
+    <form class="chat-foot" id="chatForm" autocomplete="off">
+      <input class="form-control" id="chatInput" name="message" maxlength="1000" placeholder="Ask a question…" aria-label="Message" data-testid="chat-input" required>
+      <button class="btn btn-primary" type="submit" id="chatSend" aria-label="Send" data-testid="chat-send"><i class="bi bi-send-fill"></i></button>
+    </form>
+  </section>
+</div>

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% block title %}Reports{% endblock %}
+{% block content %}
+<div class="page-header"><div><h1>Inventory reports</h1><p>Analyse stock and export any report as CSV.</p></div>
+  <a class="btn btn-primary" href="{% url 'inventory:export_csv' kind %}?start={{ start }}&end={{ end }}" data-testid="export-csv"><i class="bi bi-download"></i> Export CSV</a></div>
+
+<div class="row g-3 mb-3">
+  <div class="col-lg-7"><div class="card h-100"><div class="card-body">
+    <div class="d-flex justify-content-between flex-wrap gap-2"><div><div class="stat-label">Inventory valuation (cost)</div><div class="stat-value">${{ totals.total_value|floatformat:2|intcomma }}</div><div class="small text-muted">Retail value ${{ totals.retail_value|floatformat:2|intcomma }} · {{ totals.total_units|intcomma }} units</div></div>
+    <span class="stat-icon tone-green"><i class="bi bi-cash-stack"></i></span></div>
+    <div class="row g-2 mt-3">
+      <div class="col-4"><div class="p-2 rounded-3 bg-light"><div class="small text-muted">Products</div><div class="fw-bold">{{ totals.total_products }}</div></div></div>
+      <div class="col-4"><div class="p-2 rounded-3 bg-light"><div class="small text-muted">Low stock</div><div class="fw-bold text-warning">{{ totals.low_stock }}</div></div></div>
+      <div class="col-4"><div class="p-2 rounded-3 bg-light"><div class="small text-muted">Out of stock</div><div class="fw-bold text-danger">{{ totals.out_of_stock }}</div></div></div>
+    </div>
+  </div></div></div>
+  <div class="col-lg-5"><div class="card h-100" data-testid="currency-card">
+    <div class="card-header"><h2><i class="bi bi-globe2 me-1"></i> Valuation in other currencies</h2>
+      {% if currency.source == 'live' %}<span class="badge-soft badge-in">Live · {{ currency.date }}</span>{% else %}<span class="badge-soft badge-low" title="{{ currency.error }}">Fallback rates</span>{% endif %}</div>
+    <div class="card-body py-2"><div class="row g-2">
+      {% for c in currency.converted %}<div class="col-6"><div class="p-2 rounded-3 bg-light"><div class="small text-muted">{{ c.currency }} <span class="opacity-75">@ {{ c.rate }}</span></div><div class="fw-bold">{{ c.amount|intcomma }}</div></div></div>{% endfor %}
+    </div>
+    <p class="small text-muted mb-0 mt-2">Source: {{ currency.provider }}{% if currency.source != 'live' %} – the live exchange-rate service is unavailable, so approximate reference rates are shown.{% endif %}</p></div>
+  </div></div>
+</div>
+
+<div class="card">
+  <div class="card-header flex-wrap">
+    <ul class="nav nav-pills gap-1 flex-wrap" role="tablist">
+      {% for key, label in reports.items %}<li class="nav-item"><a class="nav-link py-1 px-3 {% if key == kind %}active{% endif %}" href="?report={{ key }}&start={{ start }}&end={{ end }}">{{ label }}</a></li>{% endfor %}
+    </ul>
+    {% if kind == 'stock-in' or kind == 'stock-out' or kind == 'movement' %}
+    <form class="filter-bar" method="get"><input type="hidden" name="report" value="{{ kind }}">
+      <input class="form-control form-control-sm" type="date" name="start" value="{{ start }}" aria-label="From"><input class="form-control form-control-sm" type="date" name="end" value="{{ end }}" aria-label="To">
+      <button class="btn btn-sm btn-light" type="submit">Apply</button></form>
+    {% endif %}
+  </div>
+  <div class="px-3 pt-3"><h2 class="h6 mb-0">{{ title }} <span class="text-muted fw-normal">· {{ row_count }} row{{ row_count|pluralize }}{% if row_count > 200 %} (first 200 shown; export for all){% endif %}</span></h2></div>
+  {% if rows %}
+  <div class="table-responsive mt-2"><table class="table table-hover table-sm text-nowrap" data-testid="report-table">
+    <thead><tr>{% for h in headers %}<th>{{ h }}</th>{% endfor %}</tr></thead>
+    <tbody>{% for row in rows %}<tr>{% for cell in row %}<td>{{ cell }}</td>{% endfor %}</tr>{% endfor %}</tbody>
+  </table></div>
+  {% else %}<div class="empty-state"><i class="bi bi-clipboard-data"></i><h3>No data for this report</h3><p>Try a wider date range.</p></div>{% endif %}
+</div>
+{% endblock %}

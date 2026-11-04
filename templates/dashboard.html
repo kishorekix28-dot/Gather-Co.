@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% load static humanize %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>Welcome back, {{ user.first_name|default:user.username }}</h1>
+    <p>Here's what's happening with your inventory today.</p>
+  </div>
+  <div class="d-flex gap-2 flex-wrap">
+    <a class="btn btn-light" href="{% url 'inventory:transaction_create' %}?type=OUT"><i class="bi bi-box-arrow-up"></i> Stock out</a>
+    <a class="btn btn-primary" href="{% url 'inventory:transaction_create' %}?type=IN"><i class="bi bi-box-arrow-in-down"></i> Stock in</a>
+  </div>
+</div>
+
+<div class="row g-3 mb-3" data-testid="stat-cards">
+  <div class="col-6 col-md-4 col-xxl-2"><a href="{% url 'inventory:product_list' %}" class="card stat-card"><span class="stat-icon tone-indigo"><i class="bi bi-box-seam"></i></span><div><div class="stat-label">Products</div><div class="stat-value" data-testid="stat-products">{{ totals.total_products|intcomma }}</div></div></a></div>
+  <div class="col-6 col-md-4 col-xxl-2"><div class="card stat-card"><span class="stat-icon tone-sky"><i class="bi bi-stack"></i></span><div><div class="stat-label">Units in stock</div><div class="stat-value">{{ totals.total_units|intcomma }}</div></div></div></div>
+  <div class="col-6 col-md-4 col-xxl-2"><div class="card stat-card"><span class="stat-icon tone-green"><i class="bi bi-currency-dollar"></i></span><div><div class="stat-label">Inventory value</div><div class="stat-value">${{ totals.total_value|floatformat:0|intcomma }}</div></div></div></div>
+  <div class="col-6 col-md-4 col-xxl-2"><a href="{% url 'inventory:product_list' %}?stock=low" class="card stat-card"><span class="stat-icon tone-amber"><i class="bi bi-exclamation-triangle"></i></span><div><div class="stat-label">Low stock</div><div class="stat-value" data-testid="stat-low">{{ totals.low_stock }}</div></div></a></div>
+  <div class="col-6 col-md-4 col-xxl-2"><a href="{% url 'inventory:product_list' %}?stock=out" class="card stat-card"><span class="stat-icon tone-red"><i class="bi bi-x-octagon"></i></span><div><div class="stat-label">Out of stock</div><div class="stat-value" data-testid="stat-out">{{ totals.out_of_stock }}</div></div></a></div>
+  <div class="col-6 col-md-4 col-xxl-2"><a href="{% url 'inventory:category_list' %}" class="card stat-card"><span class="stat-icon tone-violet"><i class="bi bi-tags"></i></span><div><div class="stat-label">Categories</div><div class="stat-value">{{ totals.total_categories }}</div></div></a></div>
+</div>
+
+<div class="row g-3 mb-3">
+  <div class="col-lg-8">
+    <div class="card h-100">
+      <div class="card-header"><h2>Monthly stock movement</h2><span class="text-muted small">Units in vs. out · last 6 months</span></div>
+      <div class="card-body"><div class="chart-box"><canvas id="monthlyChart" aria-label="Monthly stock movement chart" role="img"></canvas></div></div>
+    </div>
+  </div>
+  <div class="col-lg-4">
+    <div class="card h-100">
+      <div class="card-header"><h2>Stock overview</h2></div>
+      <div class="card-body"><div class="chart-box"><canvas id="statusChart" aria-label="Stock status chart" role="img"></canvas></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3 mb-3">
+  <div class="col-lg-5">
+    <div class="card h-100">
+      <div class="card-header"><h2>Value by category</h2></div>
+      <div class="card-body"><div class="chart-box"><canvas id="categoryChart" aria-label="Inventory value by category chart" role="img"></canvas></div></div>
+    </div>
+  </div>
+  <div class="col-lg-7">
+    <div class="card h-100">
+      <div class="card-header"><h2>Monthly inventory statistics</h2></div>
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead><tr><th>Month</th><th class="text-end">Stock in</th><th class="text-end">Stock out</th><th class="text-end">Net</th><th class="text-end">Adjustments</th><th class="text-end">Transactions</th></tr></thead>
+          <tbody>{% for m in monthly reversed %}<tr><td class="fw-semibold">{{ m.label }}</td><td class="text-end text-success">+{{ m.stock_in|intcomma }}</td><td class="text-end text-danger">−{{ m.stock_out|intcomma }}</td><td class="text-end fw-semibold">{{ m.net|intcomma }}</td><td class="text-end">{{ m.adjustments }}</td><td class="text-end">{{ m.transactions }}</td></tr>{% endfor %}</tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-xl-5">
+    <div class="card h-100">
+      <div class="card-header"><h2><i class="bi bi-exclamation-triangle text-warning me-1"></i> Low-stock alerts</h2><a class="small" href="{% url 'inventory:reports' %}?report=low-stock">View report</a></div>
+      <ul class="list-group list-group-flush">
+        {% for p in low_stock_products %}
+        <li class="list-group-item d-flex align-items-center gap-3 py-3">
+          <div class="flex-grow-1 min-w-0"><a class="fw-semibold text-dark" href="{{ p.get_absolute_url }}">{{ p.name }}</a><div class="small text-muted"><span class="sku">{{ p.sku }}</span> · min {{ p.min_stock_level }}</div></div>
+          {% include "partials/status_badge.html" %}
+          <span class="fw-bold" style="min-width:2.5rem;text-align:right">{{ p.quantity }}</span>
+        </li>
+        {% empty %}
+        <li class="list-group-item empty-state"><i class="bi bi-check2-circle"></i><h3>All stocked up</h3><p class="mb-0">No products are below their minimum level.</p></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="col-xl-4">
+    <div class="card h-100">
+      <div class="card-header"><h2>Recent transactions</h2><a class="small" href="{% url 'inventory:transaction_list' %}">View all</a></div>
+      <div class="card-body py-1">
+        {% for t in recent_transactions %}
+        <div class="activity-item">
+          <span class="activity-dot {% if t.transaction_type == 'IN' %}tone-green{% elif t.transaction_type == 'OUT' %}tone-red{% else %}tone-violet{% endif %}"><i class="bi {% if t.transaction_type == 'IN' %}bi-arrow-down-left{% elif t.transaction_type == 'OUT' %}bi-arrow-up-right{% else %}bi-sliders{% endif %}"></i></span>
+          <div class="flex-grow-1 min-w-0"><div class="fw-semibold text-truncate">{{ t.product.name }}</div><div class="small text-muted">{{ t.get_transaction_type_display }} · {{ t.created_at|naturaltime }}</div></div>
+          <span class="fw-bold {% if t.quantity_change > 0 %}text-success{% else %}text-danger{% endif %}">{% if t.quantity_change > 0 %}+{% endif %}{{ t.quantity_change }}</span>
+        </div>
+        {% empty %}<div class="empty-state"><i class="bi bi-arrow-left-right"></i><h3>No transactions yet</h3></div>{% endfor %}
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3">
+    <div class="card h-100">
+      <div class="card-header"><h2>Recent activity</h2></div>
+      <div class="card-body py-1">
+        {% for a in recent_activity %}
+        <div class="activity-item"><span class="activity-dot tone-indigo"><i class="bi bi-lightning-charge"></i></span><div class="min-w-0"><div class="fw-semibold small">{{ a.action }}</div><div class="small text-muted text-truncate" style="max-width:200px">{{ a.description }}</div><div class="small text-muted">{{ a.user.username|default:"system" }} · {{ a.created_at|naturaltime }}</div></div></div>
+        {% empty %}<div class="empty-state"><i class="bi bi-clock-history"></i><h3>No activity yet</h3></div>{% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{{ chart_data|json_script:"chart-data" }}
+{% endblock %}
+{% block extra_js %}
+<script src="{% static 'vendor/chartjs/chart.umd.min.js' %}"></script>
+<script src="{% static 'js/dashboard.js' %}"></script>
+{% endblock %}

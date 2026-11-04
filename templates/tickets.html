@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Support Tickets{% endblock %}
+{% block content %}
+<div class="page-header"><div><h1>{% if admin_view %}All support tickets{% else %}My support tickets{% endif %}</h1><p>Track questions and issues raised manually or by the assistant.</p></div>
+  <a class="btn btn-primary" href="{% url 'support:create' %}" data-testid="new-ticket"><i class="bi bi-plus-lg"></i> New ticket</a></div>
+<div class="card">
+  <div class="card-header"><form class="filter-bar w-100" method="get" role="search">
+    <input class="form-control grow" type="search" name="q" value="{{ filters.q }}" placeholder="Search ticket ID, subject{% if admin_view %} or user{% endif %}" aria-label="Search tickets">
+    <select class="form-select" name="status" aria-label="Status" data-autosubmit><option value="">All statuses</option>{% for v, l in statuses %}<option value="{{ v }}" {% if filters.status == v %}selected{% endif %}>{{ l }}</option>{% endfor %}</select>
+    <select class="form-select" name="priority" aria-label="Priority" data-autosubmit><option value="">All priorities</option>{% for v, l in priorities %}<option value="{{ v }}" {% if filters.priority == v %}selected{% endif %}>{{ l }}</option>{% endfor %}</select>
+    <button class="btn btn-primary" type="submit"><i class="bi bi-search"></i> Search</button>
+  </form></div>
+  {% if page_obj.object_list %}
+  <div class="table-responsive"><table class="table table-hover" data-testid="ticket-table">
+    <thead><tr><th>Ticket</th><th>Subject</th>{% if admin_view %}<th>User</th>{% endif %}<th>Status</th><th>Priority</th><th>Source</th><th>Updated</th></tr></thead>
+    <tbody>{% for t in page_obj %}<tr>
+      <td><a class="row-link font-monospace small" href="{{ t.get_absolute_url }}">{{ t.ticket_id }}</a></td>
+      <td>{{ t.subject|truncatechars:60 }}</td>{% if admin_view %}<td>{{ t.user.username|default:"Anonymous visitor" }}</td>{% endif %}
+      <td>{% include "partials/ticket_badges.html" %}</td>
+      <td><span class="badge-soft {% if t.priority == 'URGENT' %}badge-out{% elif t.priority == 'HIGH' %}badge-low{% else %}badge-neutral{% endif %}">{{ t.get_priority_display }}</span></td>
+      <td>{% if t.source == 'ASSISTANT' %}<i class="bi bi-robot text-primary"></i> Assistant{% else %}Manual{% endif %}</td>
+      <td class="text-nowrap small text-muted">{{ t.updated_at|date:"M d, H:i" }}</td>
+    </tr>{% endfor %}</tbody>
+  </table></div>
+  {% include "partials/pagination.html" %}
+  {% else %}<div class="empty-state"><i class="bi bi-life-preserver"></i><h3>No tickets yet</h3><p>Create a ticket or ask the assistant — it opens one automatically when it can't help.</p></div>{% endif %}
+</div>
+{% endblock %}

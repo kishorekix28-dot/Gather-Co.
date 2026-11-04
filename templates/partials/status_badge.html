@@ -1,0 +1,1 @@
+<span class="badge-soft {% if p.stock_status == 'out' %}badge-out{% elif p.stock_status == 'low' %}badge-low{% else %}badge-in{% endif %}">{{ p.stock_status_label }}</span>

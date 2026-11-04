@@ -9,23 +9,35 @@
 __pycache__/
 *.py[cod]
 *.pyo
-.venv/
 venv/
+.venv/
 ENV/
 
-# Django artifacts and uploads
+# Django
 db.sqlite3
 *.sqlite3
 media/
 staticfiles/
 
-# Tooling and editor state
-.vscode/
-.idea/
+# Logs and temporary files
+logs/*
+!logs/.gitkeep
+*.log
+*.tmp
+*.swp
+tmp/
+
+# Testing
 .pytest_cache/
 .coverage
 htmlcov/
+test-results/
+tests/playwright/.artifacts/
+
+# Tooling and editor state
 node_modules/
+.vscode/
+.idea/
 
 # OS files
 Thumbs.db

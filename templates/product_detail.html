@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% block title %}{{ product.name }}{% endblock %}
+{% block content %}
+<nav class="breadcrumb"><a href="{% url 'inventory:product_list' %}">Products</a>&nbsp;/&nbsp;<span class="text-muted">{{ product.sku }}</span></nav>
+<div class="page-header">
+  <div><h1>{{ product.name }}</h1><p><span class="sku">{{ product.sku }}</span> · {{ product.category|default:"Uncategorised" }} · {% include "partials/status_badge.html" with p=product %}</p></div>
+  <div class="d-flex flex-wrap gap-2">
+    <a class="btn btn-light" href="{% url 'inventory:transaction_create' %}?product={{ product.pk }}&type=OUT"><i class="bi bi-dash-circle"></i> Stock out</a>
+    <a class="btn btn-primary" href="{% url 'inventory:transaction_create' %}?product={{ product.pk }}&type=IN"><i class="bi bi-plus-circle"></i> Stock in</a>
+    {% if is_admin_user %}
+    <a class="btn btn-light" href="{% url 'inventory:product_update' product.pk %}" data-testid="edit-product"><i class="bi bi-pencil"></i> Edit</a>
+    <a class="btn btn-soft-danger" href="{% url 'inventory:product_delete' product.pk %}" data-testid="delete-product"><i class="bi bi-trash"></i> Delete</a>
+    {% endif %}
+  </div>
+</div>
+<div class="row g-3">
+  <div class="col-lg-4">
+    <div class="card mb-3">
+      <div class="card-body text-center">
+        {% if product.image %}<img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid rounded-3" style="max-height:220px;object-fit:cover">
+        {% else %}<div class="thumb mx-auto" style="width:120px;height:120px;font-size:2.5rem"><i class="bi bi-box-seam"></i></div>{% endif %}
+      </div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item d-flex justify-content-between"><span class="text-muted">Quantity on hand</span><strong data-testid="product-quantity">{{ product.quantity }}</strong></li>
+        <li class="list-group-item d-flex justify-content-between"><span class="text-muted">Minimum level</span><strong>{{ product.min_stock_level }}</strong></li>
+        <li class="list-group-item d-flex justify-content-between"><span class="text-muted">Selling price</span><strong>${{ product.price }}</strong></li>
+        <li class="list-group-item d-flex justify-content-between"><span class="text-muted">Purchase cost</span><strong>${{ product.cost }}</strong></li>
+        <li class="list-group-item d-flex justify-content-between"><span class="text-muted">Stock value (cost)</span><strong>${{ product.stock_value|floatformat:2|intcomma }}</strong></li>
+        <li class="list-group-item d-flex justify-content-between"><span class="text-muted">Supplier</span><strong>{% if product.supplier and is_admin_user %}<a href="{{ product.supplier.get_absolute_url }}">{{ product.supplier }}</a>{% else %}{{ product.supplier|default:"—" }}{% endif %}</strong></li>
+      </ul>
+    </div>
+    {% if product.description %}<div class="card"><div class="card-header"><h2>Description</h2></div><div class="card-body">{{ product.description|linebreaksbr }}</div></div>{% endif %}
+  </div>
+  <div class="col-lg-8">
+    <div class="card">
+      <div class="card-header"><h2>Stock history</h2><span class="small text-muted">Last 20 movements</span></div>
+      {% if transactions %}
+      <div class="table-responsive"><table class="table table-hover">
+        <thead><tr><th>Date</th><th>Type</th><th class="text-end">Change</th><th class="text-end">Before → After</th><th>Reference</th><th>User</th></tr></thead>
+        <tbody>{% for t in transactions %}<tr><td class="text-nowrap">{{ t.created_at|date:"M d, Y H:i" }}</td><td>{% include "partials/txn_badge.html" %}</td><td class="text-end fw-semibold {% if t.quantity_change > 0 %}text-success{% else %}text-danger{% endif %}">{% if t.quantity_change > 0 %}+{% endif %}{{ t.quantity_change }}</td><td class="text-end">{{ t.quantity_before }} → {{ t.quantity_after }}</td><td>{{ t.reference|default:"—" }}</td><td>{{ t.user.username|default:"—" }}</td></tr>{% endfor %}</tbody>
+      </table></div>
+      {% else %}<div class="empty-state"><i class="bi bi-clock-history"></i><h3>No movements yet</h3><p>Record a stock-in to get started.</p></div>{% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

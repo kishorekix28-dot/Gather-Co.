@@ -1,0 +1,1 @@
+<span class="badge-soft {% if t.status == 'OPEN' %}badge-info{% elif t.status == 'IN_PROGRESS' %}badge-violet{% elif t.status == 'WAITING' %}badge-low{% elif t.status == 'RESOLVED' %}badge-in{% else %}badge-neutral{% endif %}">{{ t.get_status_display }}</span>

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Confirm{% endblock %}
+{% block content %}
+<div class="row justify-content-center"><div class="col-lg-6">
+  <div class="card"><div class="card-body p-4 text-center">
+    <span class="stat-icon tone-red mx-auto mb-3"><i class="bi bi-trash"></i></span>
+    <h1 class="h4">{{ confirm_label|default:"Delete" }} {{ kind }}?</h1>
+    <p class="mb-1"><strong>{{ object }}</strong></p>
+    {% if warning %}<p class="text-muted small">{{ warning }}</p>{% endif %}
+    <form method="post" class="d-flex justify-content-center gap-2 mt-3">{% csrf_token %}
+      <a class="btn btn-light" href="{{ cancel_url }}">Keep it</a>
+      <button class="btn btn-danger" type="submit" data-testid="confirm-delete"><i class="bi bi-trash"></i> {{ confirm_label|default:"Delete" }}</button>
+    </form>
+  </div></div>
+</div></div>
+{% endblock %}

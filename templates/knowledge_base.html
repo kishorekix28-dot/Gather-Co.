@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Knowledge Base{% endblock %}
+{% block content %}
+<div class="page-header"><div><h1>Assistant knowledge base</h1><p>FAQs and error codes stored in SQL – the assistant answers from these records.</p></div>
+  <div class="d-flex gap-2"><a class="btn btn-light" href="{% url 'assistant:error_create' %}"><i class="bi bi-plus-lg"></i> Error code</a><a class="btn btn-primary" href="{% url 'assistant:faq_create' %}"><i class="bi bi-plus-lg"></i> FAQ</a></div></div>
+<ul class="nav nav-pills mb-3 gap-1">
+  <li class="nav-item"><a class="nav-link {% if tab != 'errors' %}active{% endif %}" href="?tab=faqs">FAQs ({{ faqs|length }})</a></li>
+  <li class="nav-item"><a class="nav-link {% if tab == 'errors' %}active{% endif %}" href="?tab=errors">Error codes ({{ errors|length }})</a></li>
+</ul>
+<div class="card">
+{% if tab == 'errors' %}
+  <div class="table-responsive"><table class="table table-hover"><thead><tr><th>Code</th><th>Title</th><th>Description</th><th class="text-end">Actions</th></tr></thead><tbody>
+  {% for e in errors %}<tr><td class="fw-bold">{{ e.code }}</td><td>{{ e.title }}</td><td class="text-muted">{{ e.description|truncatechars:80 }}</td>
+    <td class="text-end text-nowrap"><a class="btn btn-sm btn-light" href="{% url 'assistant:error_update' e.pk %}" aria-label="Edit"><i class="bi bi-pencil"></i></a>
+    <form class="d-inline" method="post" action="{% url 'assistant:kb_delete' 'error' e.pk %}">{% csrf_token %}<button class="btn btn-sm btn-soft-danger" aria-label="Delete"><i class="bi bi-trash"></i></button></form></td></tr>{% endfor %}
+  </tbody></table></div>
+{% else %}
+  <div class="table-responsive"><table class="table table-hover"><thead><tr><th>Question</th><th>Category</th><th>Status</th><th>Updated</th><th class="text-end">Actions</th></tr></thead><tbody>
+  {% for f in faqs %}<tr><td class="fw-semibold">{{ f.question }}</td><td>{{ f.category }}</td><td>{% if f.is_active %}<span class="badge-soft badge-in">Active</span>{% else %}<span class="badge-soft badge-neutral">Hidden</span>{% endif %}</td><td class="small text-muted">{{ f.updated_at|date:"M d, Y" }}</td>
+    <td class="text-end text-nowrap"><a class="btn btn-sm btn-light" href="{% url 'assistant:faq_update' f.pk %}" aria-label="Edit"><i class="bi bi-pencil"></i></a>
+    <form class="d-inline" method="post" action="{% url 'assistant:kb_delete' 'faq' f.pk %}">{% csrf_token %}<button class="btn btn-sm btn-soft-danger" aria-label="Delete"><i class="bi bi-trash"></i></button></form></td></tr>{% endfor %}
+  </tbody></table></div>
+{% endif %}
+</div>
+{% endblock %}

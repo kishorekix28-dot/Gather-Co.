@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Inventory Transactions{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div><h1>Inventory transactions</h1><p>Complete, append-only history of every stock movement.</p></div>
+  <a class="btn btn-primary" href="{% url 'inventory:transaction_create' %}" data-testid="record-movement"><i class="bi bi-plus-lg"></i> Record movement</a>
+</div>
+<div class="card">
+  <div class="card-header"><form class="filter-bar w-100" method="get" role="search">
+    <input class="form-control grow" type="search" name="q" value="{{ filters.q }}" placeholder="Product, SKU or reference" aria-label="Search transactions">
+    <select class="form-select" name="type" aria-label="Type" data-autosubmit><option value="">All types</option>{% for v, l in types %}<option value="{{ v }}" {% if filters.type == v %}selected{% endif %}>{{ l }}</option>{% endfor %}</select>
+    <input class="form-control" type="date" name="start" value="{{ filters.start }}" aria-label="From date">
+    <input class="form-control" type="date" name="end" value="{{ filters.end }}" aria-label="To date">
+    <button class="btn btn-primary" type="submit"><i class="bi bi-funnel"></i> Filter</button>
+    {% if querystring %}<a class="btn btn-light" href="{% url 'inventory:transaction_list' %}">Reset</a>{% endif %}
+  </form></div>
+  {% if page_obj.object_list %}
+  <div class="table-responsive"><table class="table table-hover" data-testid="transaction-table">
+    <thead><tr><th>Date</th><th>Product</th><th>Type</th><th class="text-end">Change</th><th class="text-end">Before → After</th><th>Supplier</th><th>Reference</th><th>User</th></tr></thead>
+    <tbody>{% for t in page_obj %}<tr>
+      <td class="text-nowrap">{{ t.created_at|date:"M d, Y H:i" }}</td>
+      <td><a class="row-link" href="{{ t.product.get_absolute_url }}">{{ t.product.name }}</a><div class="small"><span class="sku">{{ t.product.sku }}</span></div></td>
+      <td>{% include "partials/txn_badge.html" %}</td>
+      <td class="text-end fw-semibold {% if t.quantity_change > 0 %}text-success{% else %}text-danger{% endif %}">{% if t.quantity_change > 0 %}+{% endif %}{{ t.quantity_change }}</td>
+      <td class="text-end">{{ t.quantity_before }} → {{ t.quantity_after }}</td>
+      <td>{{ t.supplier|default:"—" }}</td><td>{{ t.reference|default:"—" }}</td><td>{{ t.user.username|default:"—" }}</td>
+    </tr>{% endfor %}</tbody>
+  </table></div>
+  {% include "partials/pagination.html" %}
+  {% else %}<div class="empty-state"><i class="bi bi-arrow-left-right"></i><h3>No transactions found</h3><p>Adjust the filters or record a new movement.</p></div>{% endif %}
+</div>
+{% endblock %}

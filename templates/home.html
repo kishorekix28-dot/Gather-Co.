@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Inventory Management System{% endblock %}
+{% block public_content %}
+<section class="hero py-5">
+  <div class="container py-lg-5">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6">
+        <span class="badge-soft badge-violet mb-3">Inventory Management System</span>
+        <h1 class="mb-3">Know exactly what's on your shelves — <span class="text-primary">every minute.</span></h1>
+        <p class="lead text-muted mb-4">StockPilot tracks products, stock movements, suppliers and reports in one secure workspace, with an AI assistant that answers from your own help database.</p>
+        <div class="d-flex flex-wrap gap-2">
+          <a class="btn btn-primary btn-lg" href="{% url 'accounts:login' %}"><i class="bi bi-box-arrow-in-right"></i> Log in</a>
+          <a class="btn btn-light btn-lg" href="{% url 'accounts:register' %}">Create staff account</a>
+          <button class="btn btn-light btn-lg" type="button" data-open-assistant><i class="bi bi-robot"></i> Ask the assistant</button>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="row g-3">
+          <div class="col-sm-6"><div class="card stat-card h-100 flex-column align-items-start"><span class="stat-icon tone-indigo"><i class="bi bi-box-seam"></i></span><h2 class="h6 mb-0">Product catalogue</h2><p class="small text-muted mb-0">SKUs, pricing, costs, images, categories and minimum levels.</p></div></div>
+          <div class="col-sm-6"><div class="card stat-card h-100 flex-column align-items-start"><span class="stat-icon tone-green"><i class="bi bi-arrow-left-right"></i></span><h2 class="h6 mb-0">Stock ledger</h2><p class="small text-muted mb-0">Stock-in, stock-out and adjustments with a full audit trail.</p></div></div>
+          <div class="col-sm-6"><div class="card stat-card h-100 flex-column align-items-start"><span class="stat-icon tone-amber"><i class="bi bi-bell"></i></span><h2 class="h6 mb-0">Low-stock alerts</h2><p class="small text-muted mb-0">Never run out — alerts the moment stock hits its minimum.</p></div></div>
+          <div class="col-sm-6"><div class="card stat-card h-100 flex-column align-items-start"><span class="stat-icon tone-sky"><i class="bi bi-file-earmark-spreadsheet"></i></span><h2 class="h6 mb-0">Reports &amp; CSV</h2><p class="small text-muted mb-0">Valuation, movement and history reports, export-ready.</p></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

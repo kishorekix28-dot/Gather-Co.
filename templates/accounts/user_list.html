@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Users{% endblock %}
+{% block content %}
+<div class="page-header"><div><h1>Users</h1><p>Manage roles and account access.</p></div></div>
+<div class="card">
+  <div class="card-header"><form class="filter-bar w-100" method="get"><input class="form-control grow" type="search" name="q" value="{{ q }}" placeholder="Search users" aria-label="Search users"><button class="btn btn-primary" type="submit">Search</button></form></div>
+  <div class="table-responsive"><table class="table table-hover"><thead><tr><th>User</th><th>Email</th><th>Role</th><th>Status</th><th>Joined</th><th class="text-end">Actions</th></tr></thead><tbody>
+  {% for u in page_obj %}<tr><td class="fw-semibold">{{ u.username }}<div class="small text-muted">{{ u.get_full_name }}</div></td><td>{{ u.email|default:"—" }}</td>
+    <td><span class="badge-soft {% if u.is_superuser or u.profile.role == 'ADMIN' %}badge-violet{% else %}badge-info{% endif %}">{% if u.is_superuser %}Admin{% else %}{{ u.profile.get_role_display }}{% endif %}</span></td>
+    <td>{% if u.is_active %}<span class="badge-soft badge-in">Active</span>{% else %}<span class="badge-soft badge-neutral">Disabled</span>{% endif %}</td>
+    <td class="small text-muted">{{ u.date_joined|date:"M d, Y" }}</td><td class="text-end"><a class="btn btn-sm btn-light" href="{% url 'accounts:user_edit' u.pk %}">Manage</a></td></tr>{% endfor %}
+  </tbody></table></div>
+  {% include "partials/pagination.html" %}
+</div>
+{% endblock %}

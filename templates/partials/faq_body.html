@@ -1,0 +1,14 @@
+<div class="page-header"><div><h1>Frequently asked questions</h1><p>Answers are loaded live from the FAQ database via <code>/api/faqs/</code>.</p></div>
+  <button class="btn btn-primary" type="button" data-open-assistant><i class="bi bi-robot"></i> Ask the assistant</button></div>
+<div class="card mb-3"><div class="card-body py-3">
+  <form class="filter-bar" id="faqSearchForm" role="search">
+    <input class="form-control grow" type="search" id="faqSearch" placeholder="Search FAQs, e.g. “stock”" aria-label="Search FAQs" data-testid="faq-search">
+    <select class="form-select" id="faqCategory" aria-label="Category"><option value="">All topics</option></select>
+  </form>
+</div></div>
+<div id="faqStatus" class="loading-overlay" role="status"><span class="spinner-border spinner-border-sm"></span> Loading FAQs…</div>
+<div class="accordion" id="faqList" data-testid="faq-list"></div>
+<div class="row g-3 mt-2">
+  <div class="col-md-6"><div class="card h-100"><div class="card-body d-flex gap-3 align-items-center"><span class="stat-icon tone-amber"><i class="bi bi-bug"></i></span><div><h2 class="h6 mb-1">Seeing an error code?</h2><p class="small text-muted mb-0" id="errorSummary">Loading error-code reference…</p></div></div></div></div>
+  <div class="col-md-6"><div class="card h-100"><div class="card-body d-flex gap-3 align-items-center"><span class="stat-icon tone-indigo"><i class="bi bi-life-preserver"></i></span><div><h2 class="h6 mb-1">Still need help?</h2><p class="small text-muted mb-0">Ask the assistant or <a href="{% url 'support:create' %}">open a support ticket</a>.</p></div></div></div></div>
+</div>

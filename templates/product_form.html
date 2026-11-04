@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<nav class="breadcrumb"><a href="{% url 'inventory:product_list' %}">Products</a>&nbsp;/&nbsp;<span class="text-muted">{{ title }}</span></nav>
+<div class="page-header"><div><h1>{{ title }}</h1><p>Fields marked <span class="text-danger">*</span> are required. SKUs must be unique.</p></div></div>
+<form method="post" enctype="multipart/form-data" novalidate data-loading data-testid="product-form">
+  {% csrf_token %}
+  {% include "partials/form_errors.html" %}
+  <div class="row g-3">
+    <div class="col-lg-8">
+      <div class="card"><div class="card-header"><h2>Product details</h2></div><div class="card-body"><div class="row g-3">
+        {% include "partials/field.html" with field=form.name col="col-md-8" %}
+        {% include "partials/field.html" with field=form.sku col="col-md-4" %}
+        {% include "partials/field.html" with field=form.category col="col-md-6" %}
+        {% include "partials/field.html" with field=form.supplier col="col-md-6" %}
+        {% include "partials/field.html" with field=form.description %}
+      </div></div></div>
+    </div>
+    <div class="col-lg-4">
+      <div class="card mb-3"><div class="card-header"><h2>Pricing &amp; stock</h2></div><div class="card-body"><div class="row g-3">
+        {% include "partials/field.html" with field=form.price col="col-6" %}
+        {% include "partials/field.html" with field=form.cost col="col-6" %}
+        {% if form.opening_stock %}{% include "partials/field.html" with field=form.opening_stock col="col-6" %}{% endif %}
+        {% include "partials/field.html" with field=form.min_stock_level col="col-6" %}
+        {% if product %}<div class="col-12"><div class="alert alert-info small mb-0 py-2"><i class="bi bi-info-circle me-1"></i>Current stock: <strong>{{ product.quantity }}</strong>. Use stock transactions to change quantity.</div></div>{% endif %}
+      </div></div></div>
+      <div class="card"><div class="card-header"><h2>Image</h2></div><div class="card-body">{% include "partials/field.html" with field=form.image %}</div></div>
+    </div>
+  </div>
+  <div class="d-flex gap-2 justify-content-end mt-3">
+    <a class="btn btn-light" href="{% if product %}{{ product.get_absolute_url }}{% else %}{% url 'inventory:product_list' %}{% endif %}">Cancel</a>
+    <button class="btn btn-primary" type="submit"><i class="bi bi-check2"></i> Save product</button>
+  </div>
+</form>
+{% endblock %}

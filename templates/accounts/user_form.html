@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Manage {{ target.username }}{% endblock %}
+{% block content %}
+<div class="row justify-content-center"><div class="col-lg-6">
+  <div class="page-header"><div><h1>Manage {{ target.username }}</h1><p>{{ target.email }}</p></div></div>
+  <form method="post" class="card" novalidate>{% csrf_token %}
+    <div class="card-body">{% include "partials/form_errors.html" %}<div class="row g-3">{% for field in form %}{% include "partials/field.html" with field=field %}{% endfor %}</div></div>
+    <div class="card-body border-top d-flex justify-content-end gap-2"><a class="btn btn-light" href="{% url 'accounts:user_list' %}">Cancel</a><button class="btn btn-primary" type="submit">Save</button></div>
+  </form>
+</div></div>
+{% endblock %}
