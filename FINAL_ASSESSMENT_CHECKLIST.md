@@ -8,7 +8,7 @@ Results: **75/75 Django tests passed**, **30/30 Playwright tests passed** (`docs
 
 | No. | Requirement | Status |
 | --- | --------------------------------------------------- | ------ |
-| 1   | Live HTTPS site                                     | [ ] Not deployed – blocked on Render + MongoDB Atlas account access (configuration ready) |
+| 1   | Live HTTPS site                                     | [x] https://gather-co.onrender.com |
 | 2   | 3+ pages, mobile-friendly                           | [x] |
 | 3   | Chat widget on every page                           | [x] |
 | 4   | 10+ FAQs in SQL, FAQ page from API                  | [x] |
@@ -20,18 +20,18 @@ Results: **75/75 Django tests passed**, **30/30 Playwright tests passed** (`docs
 | 10  | Keys in environment variables, no secrets in GitHub | [x] |
 | 11  | Request logs + health check                         | [x] |
 | 12  | Extra third-party call with timeout and fallback    | [x] |
-| 13  | README with live address and improvements           | [ ] Partial – README and Improvements done; live address pending deployment |
+| 13  | README with live address and improvements           | [x] |
 | 14  | GitHub commits and push verified                    | [x] |
 
 ---
 
 ## Details and evidence
 
-### 1. Live HTTPS site – NOT COMPLETE
-- **Implementation:** `render.yaml` (Blueprint: web service + managed PostgreSQL), `build.sh`, `Procfile`, production settings in `config/settings.py` (SSL redirect, HSTS, secure cookies, `SECURE_PROXY_SSL_HEADER`, `RENDER_EXTERNAL_HOSTNAME`).
-- **Test performed:** `python manage.py check --deploy` → no issues; full app served by Gunicorn with `DEBUG=False` and tested by Playwright locally.
-- **Blocker:** no Render account/API key and no MongoDB Atlas connection string were available in this session, so no public URL exists. No live URL is claimed.
-- **To finish:** Render → New → Blueprint → select the repo; set `MONGODB_URI`, `DJANGO_ADMIN_USERNAME`, `DJANGO_ADMIN_EMAIL`, `DJANGO_ADMIN_PASSWORD`; then run `pytest` with `E2E_BASE_URL=https://<app>.onrender.com`.
+### 1. Live HTTPS site – COMPLETE
+- **URL:** https://gather-co.onrender.com (Render web service `Gather-Co.`, free PostgreSQL `stockpilot-db`).
+- **Configuration:** root directory = repo root; build `pip install -r requirements.txt && python manage.py collectstatic --noinput`; start `python manage.py migrate --noinput && python manage.py ensure_admin && gunicorn config.wsgi:application`; env vars `SECRET_KEY`, `DEBUG=False`, `ALLOWED_HOSTS`, `DATABASE_URL` (linked from Render), admin username/email.
+- **Tests performed on the live HTTPS site:** `/health/` → SQL `connected` (postgresql); `/`, `/faq/`, `/accounts/login/`, `/accounts/register/`, all `/api/faqs/` and `/api/errors/` endpoints → 200; `/dashboard/` → redirect to login; unknown URL → 404; FAQ page renders 13 FAQs from the API; chat widget present; assistant answered "How do I add a product?" from `faq`, "What does error 404 mean?" from `error_database`, and created ticket `TKT-20261104-84E7DF` for an unknown question.
+- **Note:** `MONGODB_URI` is not set on the live site, so `/health/` reports `degraded` and live chats are not stored in MongoDB (MongoDB storage is verified locally – see item 9). Logging in as admin requires the owner to set `DJANGO_ADMIN_PASSWORD` in Render.
 
 ### 2. 3+ pages, mobile-friendly – COMPLETE
 - **Implementation:** `templates/` – Home, Dashboard, Products, Categories, Transactions, Suppliers, Reports, FAQ, Support Tickets, Login/Registration, Profile, Users, Knowledge Base; responsive CSS in `static/css/app.css` (off-canvas sidebar < 992 px).
@@ -87,8 +87,8 @@ Results: **75/75 Django tests passed**, **30/30 Playwright tests passed** (`docs
 - **Tests:** `CurrencyApiTests` (5 tests incl. real unreachable host), Playwright `test_external_api_fallback_does_not_break_reports`.
 - **Note:** outbound access to the API was blocked in the test environment, so the live path was verified with a mocked response and the fallback path with a real network failure.
 
-### 13. README with live address and improvements – PARTIAL
-- `README.md` contains overview, features, stack, architecture, database, installation, env vars, API, testing, deployment, screenshots, limitations and an Improvements section. The live address will be added after deployment.
+### 13. README with live address and improvements – COMPLETE
+- `README.md` contains the live address, overview, features, stack, architecture, database, installation, env vars, API, testing, deployment, screenshots, limitations and an Improvements section.
 
 ### 14. GitHub commits and push – COMPLETE
 - **Repository:** https://github.com/kishorekix28-dot/Gather-Co. (branch `main`), as requested by the owner.

@@ -6,7 +6,7 @@ Developer: **Kishore**
 
 | | |
 |---|---|
-| **Live HTTPS address** | _Not deployed yet – see [Deployment status](#14-deployment-status)_ |
+| **Live HTTPS address** | https://gather-co.onrender.com |
 | **GitHub repository** | https://github.com/kishorekix28-dot/Gather-Co. |
 
 ---
@@ -197,7 +197,7 @@ Latest results (PostgreSQL 16 + MongoDB 7, production settings with Gunicorn): *
 
 ## 14. Deployment status
 
-See `FINAL_ASSESSMENT_CHECKLIST.md` for the verified status of the live deployment and GitHub push.
+Deployed on Render (free web service + free PostgreSQL) at **https://gather-co.onrender.com**. Verified 4 Nov 2026: `/health/` reports SQL connected (PostgreSQL); 13 FAQs and 8 error codes served by the API; FAQ page renders 13 items; chat widget answers FAQs and error codes and creates tickets; unknown URLs return 404. MongoDB is not configured on the live site yet (health shows `degraded`) – set `MONGODB_URI` in Render to enable chat history and feedback storage. The free instance sleeps when idle, so the first request can take ~50 s.
 
 ## 15. Improvements (future work)
 
