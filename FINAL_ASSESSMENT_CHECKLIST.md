@@ -21,7 +21,7 @@ Results: **75/75 Django tests passed**, **30/30 Playwright tests passed** (`docs
 | 11  | Request logs + health check                         | [x] |
 | 12  | Extra third-party call with timeout and fallback    | [x] |
 | 13  | README with live address and improvements           | [ ] Partial – README and Improvements done; live address pending deployment |
-| 14  | GitHub commits and push verified                    | [ ] Commits created locally; push status below |
+| 14  | GitHub commits and push verified                    | [x] |
 
 ---
 
@@ -90,7 +90,10 @@ Results: **75/75 Django tests passed**, **30/30 Playwright tests passed** (`docs
 ### 13. README with live address and improvements – PARTIAL
 - `README.md` contains overview, features, stack, architecture, database, installation, env vars, API, testing, deployment, screenshots, limitations and an Improvements section. The live address will be added after deployment.
 
-### 14. GitHub commits and push – see push status
-- Repository: https://github.com/kishorekix28-dot/Gather-Co. (branch `main`, history preserved, no force push).
-- Commits: `a94c69f` Replace Gather & Co rental app with inventory management system · `fc705e0` Refine secret scan · `0a6cd07` Add Django and Playwright test suites · `6e3c331` Add Render deployment configuration · `29ca800` Add README, screenshots and test evidence · plus this checklist.
-- Previous uncommitted edits to the old README/settings were preserved with `git stash` (`stash@{0}`).
+### 14. GitHub commits and push – COMPLETE
+- **Repository:** https://github.com/kishorekix28-dot/Gather-Co. (branch `main`), as requested by the owner.
+- **Method:** the repository's earlier static-site history was merged with `git merge -s ours --allow-unrelated-histories` (no force push; all previous commits preserved), then pushed through VS Code using the owner's signed-in GitHub account.
+- **Verification:** `git ls-remote origin main` = local `HEAD` (`71495f6`); GitHub API lists the commits below; GitHub tree has 229 paths with no `.env` or `db.sqlite3`; `git status` clean.
+- **Commits:** `a94c69f` Replace Gather & Co rental app with inventory management system · `fc705e0` Refine secret scan · `0a6cd07` Add Django and Playwright test suites · `6e3c331` Add Render deployment configuration · `29ca800` Add README, screenshots and test evidence · `ceebcb2` Add final assessment checklist · `8d4ea5a` Point documentation at the kishorekix28-dot repository · `71495f6` Merge existing history · plus this update.
+- Secret scan before every commit: passed (192 tracked files, no secrets).
+- Earlier uncommitted edits to the old app were preserved with `git stash` (`stash@{0}`); the previous remote is kept as `jkishoresubha`.
