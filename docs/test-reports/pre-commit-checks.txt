@@ -1,0 +1,216 @@
+== manage.py check
+System check identified no issues (0 silenced).
+== migrations up to date
+No changes detected
+== migrate
+Operations to perform:
+  Apply all migrations: accounts, admin, assistant, auth, contenttypes, inventory, sessions, suppliers, support
+Running migrations:
+  No migrations to apply.
+== Django test suite
+Found 75 test(s).
+Creating test database for alias 'default'...
+System check identified no issues (0 silenced).
+.2026-11-04 10:02:02,864 WARNING django.request Not Found: /api/errors/499/
+...2026-11-04 10:02:02,969 WARNING django.request Not Found: /api/faqs/999999/
+...2026-11-04 10:02:03,077 WARNING django.request Forbidden: /api/faqs/
+2026-11-04 10:02:03,380 WARNING django.request Forbidden: /api/faqs/
+....2026-11-04 10:02:04,158 WARNING django.request Forbidden: /api/products/
+2026-11-04 10:02:04,158 WARNING django.request Forbidden: /api/inventory/summary/
+2026-11-04 10:02:04,159 WARNING django.request Forbidden: /api/tickets/
+...2026-11-04 10:02:04,321 WARNING django.request Bad Request: /assistant/feedback/
+2026-11-04 10:02:04,323 WARNING django.request Not Found: /assistant/feedback/
+..2026-11-04 10:02:04,399 WARNING django.request Bad Request: /assistant/chat/
+2026-11-04 10:02:04,399 WARNING django.request Bad Request: /assistant/chat/
+2026-11-04 10:02:04,400 WARNING django.request Bad Request: /assistant/chat/
+2026-11-04 10:02:04,466 WARNING django.request Too Many Requests: /assistant/chat/
+2026-11-04 10:02:04,467 WARNING django.request Too Many Requests: /assistant/chat/
+........2026-11-04 10:02:05,813 ERROR inventory.app MongoDB message insert failed: ServerSelectionTimeoutError
+.2026-11-04 10:02:06,367 ERROR inventory.app MongoDB message insert failed: ServerSelectionTimeoutError
+2026-11-04 10:02:07,370 WARNING inventory.app MongoDB ping failed: ServerSelectionTimeoutError
+2026-11-04 10:02:07,371 ERROR django.request Service Unavailable: /assistant/feedback/
+.2026-11-04 10:02:07,907 WARNING inventory.app MongoDB ping failed: ServerSelectionTimeoutError
+...2026-11-04 10:02:09,780 WARNING django.request Forbidden (Permission denied): /tickets/TKT-20261104-3775D3/
+Traceback (most recent call last):
+  File "/opt/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/venv/lib/python3.13/site-packages/django/contrib/auth/decorators.py", line 60, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/opt/venv/lib/python3.13/site-packages/django/views/decorators/http.py", line 64, in inner
+    return func(request, *args, **kwargs)
+  File "/home/claude/inventory-management/support/views.py", line 101, in ticket_detail
+    raise PermissionDenied
+django.core.exceptions.PermissionDenied
+.2026-11-04 10:02:10,356 WARNING django.request Forbidden (Permission denied): /tickets/TKT-20261104-F57B88/
+Traceback (most recent call last):
+  File "/opt/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/venv/lib/python3.13/site-packages/django/contrib/auth/decorators.py", line 60, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/opt/venv/lib/python3.13/site-packages/django/views/decorators/http.py", line 64, in inner
+    return func(request, *args, **kwargs)
+  File "/home/claude/inventory-management/support/views.py", line 92, in ticket_detail
+    ticket = _get_ticket_for(request, ticket_id)
+  File "/home/claude/inventory-management/support/views.py", line 47, in _get_ticket_for
+    raise PermissionDenied("You can only view your own tickets.")
+django.core.exceptions.PermissionDenied: You can only view your own tickets.
+.2026-11-04 10:02:10,369 WARNING inventory.app Currency API unavailable (connection error); using fallback rates
+2026-11-04 10:02:10,370 WARNING inventory.app Currency API unavailable (response was not valid JSON); using fallback rates
+2026-11-04 10:02:10,370 WARNING inventory.app Currency API unavailable (response missing 'rates'); using fallback rates
+2026-11-04 10:02:10,370 WARNING inventory.app Currency API unavailable (invalid rate for EUR); using fallback rates
+2026-11-04 10:02:10,370 WARNING inventory.app Currency API unavailable (unexpected HTTP status 503); using fallback rates
+..2026-11-04 10:02:10,375 WARNING inventory.app Currency API unavailable (unexpected HTTP status 403); using fallback rates
+.2026-11-04 10:02:10,704 WARNING inventory.app Currency API unavailable (connection error); using fallback rates
+..2026-11-04 10:02:11,026 WARNING django.request Forbidden (Permission denied): /suppliers/
+Traceback (most recent call last):
+  File "/opt/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/venv/lib/python3.13/site-packages/django/contrib/auth/decorators.py", line 60, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/claude/inventory-management/accounts/roles.py", line 30, in wrapper
+    raise PermissionDenied("Administrator access is required.")
+django.core.exceptions.PermissionDenied: Administrator access is required.
+.2026-11-04 10:02:11,063 WARNING django.request Not Found: /definitely/not/here/
+.2026-11-04 10:02:11,101 ERROR django.request Internal Server Error: /boom/
+Traceback (most recent call last):
+  File "/opt/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/claude/inventory-management/tests/test_infrastructure.py", line 20, in boom
+    raise RuntimeError("test failure")
+RuntimeError: test failure
+.2026-11-04 10:02:11,471 WARNING django.request Forbidden (Permission denied): /diagnostics/trigger-500/
+Traceback (most recent call last):
+  File "/opt/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/venv/lib/python3.13/site-packages/django/contrib/auth/decorators.py", line 60, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/claude/inventory-management/accounts/roles.py", line 30, in wrapper
+    raise PermissionDenied("Administrator access is required.")
+django.core.exceptions.PermissionDenied: Administrator access is required.
+2026-11-04 10:02:11,792 ERROR django.request Internal Server Error: /diagnostics/trigger-500/
+Traceback (most recent call last):
+  File "/opt/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/venv/lib/python3.13/site-packages/django/contrib/auth/decorators.py", line 60, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/claude/inventory-management/accounts/roles.py", line 31, in wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/claude/inventory-management/core/views.py", line 61, in trigger_server_error
+    raise RuntimeError("Intentional error raised from the diagnostics route.")
+RuntimeError: Intentional error raised from the diagnostics route.
+.2026-11-04 10:02:12,117 WARNING django.request Not Found: /products/987654/
+..2026-11-04 10:02:12,185 ERROR django.request Service Unavailable: /health/
+...2026-11-04 10:02:12,704 WARNING django.security.csrf Forbidden (CSRF cookie not set.): /accounts/login/
+2026-11-04 10:02:12,706 WARNING django.security.csrf Forbidden (CSRF cookie not set.): /assistant/chat/
+........2026-11-04 10:02:14,329 WARNING django.request Method Not Allowed (GET): /accounts/logout/
+2026-11-04 10:02:14,329 WARNING django.request Method Not Allowed: /accounts/logout/
+...2026-11-04 10:02:14,887 WARNING django.request Forbidden (Permission denied): /products/new/
+Traceback (most recent call last):
+  File "/opt/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/venv/lib/python3.13/site-packages/django/contrib/auth/decorators.py", line 60, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/claude/inventory-management/accounts/roles.py", line 30, in wrapper
+    raise PermissionDenied("Administrator access is required.")
+django.core.exceptions.PermissionDenied: Administrator access is required.
+2026-11-04 10:02:14,896 WARNING django.request Forbidden (Permission denied): /products/2/delete/
+Traceback (most recent call last):
+  File "/opt/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/venv/lib/python3.13/site-packages/django/contrib/auth/decorators.py", line 60, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/claude/inventory-management/accounts/roles.py", line 30, in wrapper
+    raise PermissionDenied("Administrator access is required.")
+django.core.exceptions.PermissionDenied: Administrator access is required.
+2026-11-04 10:02:14,903 WARNING django.request Forbidden (Permission denied): /suppliers/
+Traceback (most recent call last):
+  File "/opt/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/venv/lib/python3.13/site-packages/django/contrib/auth/decorators.py", line 60, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/claude/inventory-management/accounts/roles.py", line 30, in wrapper
+    raise PermissionDenied("Administrator access is required.")
+django.core.exceptions.PermissionDenied: Administrator access is required.
+2026-11-04 10:02:14,908 WARNING django.request Forbidden (Permission denied): /reports/
+Traceback (most recent call last):
+  File "/opt/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/venv/lib/python3.13/site-packages/django/contrib/auth/decorators.py", line 60, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/claude/inventory-management/accounts/roles.py", line 30, in wrapper
+    raise PermissionDenied("Administrator access is required.")
+django.core.exceptions.PermissionDenied: Administrator access is required.
+2026-11-04 10:02:14,912 WARNING django.request Forbidden (Permission denied): /accounts/users/
+Traceback (most recent call last):
+  File "/opt/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/venv/lib/python3.13/site-packages/django/contrib/auth/decorators.py", line 60, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/claude/inventory-management/accounts/roles.py", line 30, in wrapper
+    raise PermissionDenied("Administrator access is required.")
+django.core.exceptions.PermissionDenied: Administrator access is required.
+2026-11-04 10:02:14,917 WARNING django.request Forbidden (Permission denied): /assistant/knowledge-base/
+Traceback (most recent call last):
+  File "/opt/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/venv/lib/python3.13/site-packages/django/contrib/auth/decorators.py", line 60, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/claude/inventory-management/accounts/roles.py", line 30, in wrapper
+    raise PermissionDenied("Administrator access is required.")
+django.core.exceptions.PermissionDenied: Administrator access is required.
+..2026-11-04 10:02:15,686 WARNING django.request Not Found: /reports/export/unknown/
+.................
+----------------------------------------------------------------------
+Ran 75 tests in 19.028s
+
+OK
+Destroying test database for alias 'default'...
+== production deploy check
+System check identified no issues (0 silenced).
+== collectstatic
+static OK
+== secret scan
+fatal: not a git repository (or any of the parent directories): .git
+Traceback (most recent call last):
+  File "/home/claude/inventory-management/scripts/secret_scan.py", line 58, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/home/claude/inventory-management/scripts/secret_scan.py", line 35, in main
+    for path in tracked_files(staged):
+                ~~~~~~~~~~~~~^^^^^^^^
+  File "/home/claude/inventory-management/scripts/secret_scan.py", line 29, in tracked_files
+    return [f for f in subprocess.check_output(cmd, text=True).splitlines() if f]
+                       ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/subprocess.py", line 473, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+           ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+               **kwargs).stdout
+               ^^^^^^^^^
+  File "/usr/local/lib/python3.13/subprocess.py", line 578, in run
+    raise CalledProcessError(retcode, process.args,
+                             output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['git', 'ls-files']' returned non-zero exit status 128.

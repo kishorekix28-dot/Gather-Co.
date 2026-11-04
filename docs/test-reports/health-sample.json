@@ -1,0 +1,18 @@
+{
+    "status": "healthy",
+    "application": "Inventory Management System",
+    "database": "connected",
+    "mongodb": "connected",
+    "services": {
+        "sql": {
+            "status": "connected",
+            "engine": "postgresql",
+            "latency_ms": 0.38
+        },
+        "mongodb": {
+            "status": "connected",
+            "latency_ms": 0.5
+        }
+    },
+    "timestamp": "2026-11-04T04:33:54.390279+00:00"
+}

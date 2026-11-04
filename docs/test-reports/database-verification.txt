@@ -1,0 +1,11 @@
+SQL engine: postgresql inventory_e2e
+FAQs (active): 13
+Error codes: [400, 401, 403, 404, 405, 408, 429, 500]
+Help articles: 4
+Products: 24 | Categories: 6 | Suppliers: 6 | Stock transactions: 257
+Tickets: 4 (assistant-created: 4 )
+Negative quantities: 0
+MongoDB: connected | collection counts: {'conversations': 20, 'messages': 64, 'feedback': 4}
+Sample ai_fallback message: {'conversation_id': '11940d3e01434684b0d2eacdb5bdee11', 'user_message': 'How do I sync stock with the Mars colony depot 039326?', 'source': 'ai_fallback', 'ticket_id': 'TKT-20261104-B4CB64', 'timestamp': datetime.datetime(2026, 11, 4, 4, 28, 39, 998000)}
+Sample feedback: {'conversation_id': 'cd5cb95ccc3549fba68ddb4abb0f6f0f', 'message_id': '6aeab4790ce409d568a0dbe9', 'rating': 1, 'feedback_text': 'Helpful', 'timestamp': datetime.datetime(2026, 11, 4, 4, 28, 41, 148000)}
+Message sources: ['ai_fallback', 'error_database', 'faq', 'help_docs']

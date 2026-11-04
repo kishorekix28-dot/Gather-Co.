@@ -1,0 +1,15 @@
+2026-11-04 10:03:32,833 INFO inventory.requests method=POST path=/assistant/chat/ status=200 duration_ms=507.03
+2026-11-04 10:03:34,365 INFO inventory.requests method=GET path=/health/ status=200 duration_ms=503.46
+2026-11-04 10:03:37,957 INFO inventory.requests method=GET path=/diagnostics/trigger-500/ status=403 duration_ms=12.72
+2026-11-04 10:03:38,260 INFO inventory.requests method=GET path=/diagnostics/trigger-500/ status=500 duration_ms=6.05
+2026-11-04 10:03:38,644 INFO inventory.requests method=GET path=/health/ status=200 duration_ms=6.44
+2026-11-04 10:03:38,678 INFO inventory.requests method=GET path=/health/ status=503 duration_ms=0.79
+2026-11-04 10:03:38,706 INFO inventory.requests method=GET path=/health/ status=200 duration_ms=0.95
+2026-11-04 10:03:39,219 INFO inventory.requests method=POST path=/assistant/chat/ status=403 duration_ms=0.70
+2026-11-04 10:03:39,780 INFO inventory.requests method=GET path=/dashboard/ status=200 duration_ms=19.72
+2026-11-04 10:03:40,538 INFO inventory.requests method=GET path=/dashboard/ status=200 duration_ms=18.87
+2026-11-04 10:03:40,551 INFO inventory.requests method=GET path=/dashboard/ status=200 duration_ms=12.94
+2026-11-04 10:03:40,555 INFO inventory.requests method=GET path=/dashboard/ status=302 duration_ms=0.34
+2026-11-04 10:03:41,064 INFO inventory.requests method=GET path=/dashboard/ status=200 duration_ms=13.17
+2026-11-04 10:03:41,095 INFO inventory.requests method=GET path=/dashboard/ status=302 duration_ms=0.40
+2026-11-04 10:03:46,261 INFO inventory.requests method=GET path=/dashboard/ status=200 duration_ms=16.31

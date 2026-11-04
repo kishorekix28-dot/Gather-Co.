@@ -1,0 +1,287 @@
+Found 75 test(s).
+Creating test database for alias 'default' ('test_inventory')...
+Operations to perform:
+  Synchronize unmigrated apps: api, core, humanize, messages, rest_framework, staticfiles
+  Apply all migrations: accounts, admin, assistant, auth, contenttypes, inventory, sessions, suppliers, support
+Synchronizing apps without migrations:
+  Creating tables...
+    Running deferred SQL...
+Running migrations:
+  Applying contenttypes.0001_initial... OK
+  Applying auth.0001_initial... OK
+  Applying accounts.0001_initial... OK
+  Applying admin.0001_initial... OK
+  Applying admin.0002_logentry_remove_auto_add... OK
+  Applying admin.0003_logentry_add_action_flag_choices... OK
+  Applying assistant.0001_initial... OK
+  Applying assistant.0002_seed_knowledge_base... OK
+  Applying contenttypes.0002_remove_content_type_name... OK
+  Applying auth.0002_alter_permission_name_max_length... OK
+  Applying auth.0003_alter_user_email_max_length... OK
+  Applying auth.0004_alter_user_username_opts... OK
+  Applying auth.0005_alter_user_last_login_null... OK
+  Applying auth.0006_require_contenttypes_0002... OK
+  Applying auth.0007_alter_validators_add_error_messages... OK
+  Applying auth.0008_alter_user_username_max_length... OK
+  Applying auth.0009_alter_user_last_name_max_length... OK
+  Applying auth.0010_alter_group_name_max_length... OK
+  Applying auth.0011_update_proxy_permissions... OK
+  Applying auth.0012_alter_user_first_name_max_length... OK
+  Applying suppliers.0001_initial... OK
+  Applying inventory.0001_initial... OK
+  Applying sessions.0001_initial... OK
+  Applying support.0001_initial... OK
+System check identified no issues (0 silenced).
+test_all_required_error_codes_exist (tests.test_api.ErrorCodeApiTests.test_all_required_error_codes_exist) ... ok
+test_error_detail (tests.test_api.ErrorCodeApiTests.test_error_detail) ... 2026-11-04 10:03:29,432 WARNING django.request Not Found: /api/errors/499/
+ok
+test_error_search (tests.test_api.ErrorCodeApiTests.test_error_search) ... ok
+test_faq_changes_are_reflected (tests.test_api.FAQApiTests.test_faq_changes_are_reflected) ... ok
+test_faq_detail_and_404 (tests.test_api.FAQApiTests.test_faq_detail_and_404) ... 2026-11-04 10:03:29,556 WARNING django.request Not Found: /api/faqs/999999/
+ok
+test_faq_page_uses_api_not_hardcoded_content (tests.test_api.FAQApiTests.test_faq_page_uses_api_not_hardcoded_content) ... ok
+test_faq_search (tests.test_api.FAQApiTests.test_faq_search) ... ok
+test_faq_write_requires_admin (tests.test_api.FAQApiTests.test_faq_write_requires_admin) ... 2026-11-04 10:03:29,685 WARNING django.request Forbidden: /api/faqs/
+2026-11-04 10:03:29,978 WARNING django.request Forbidden: /api/faqs/
+ok
+test_faqs_are_stored_in_sql (tests.test_api.FAQApiTests.test_faqs_are_stored_in_sql) ... ok
+test_list_faqs (tests.test_api.FAQApiTests.test_list_faqs) ... ok
+test_inventory_api_for_staff (tests.test_api.SecuredApiTests.test_inventory_api_for_staff) ... ok
+test_inventory_api_requires_authentication (tests.test_api.SecuredApiTests.test_inventory_api_requires_authentication) ... 2026-11-04 10:03:30,711 WARNING django.request Forbidden: /api/products/
+2026-11-04 10:03:30,711 WARNING django.request Forbidden: /api/inventory/summary/
+2026-11-04 10:03:30,711 WARNING django.request Forbidden: /api/tickets/
+ok
+test_faq_answer_is_stored_in_mongodb (tests.test_assistant.ChatEndpointTests.test_faq_answer_is_stored_in_mongodb) ... ok
+test_feedback_stored_in_mongodb (tests.test_assistant.ChatEndpointTests.test_feedback_stored_in_mongodb) ... ok
+test_feedback_validation (tests.test_assistant.ChatEndpointTests.test_feedback_validation) ... 2026-11-04 10:03:30,866 WARNING django.request Bad Request: /assistant/feedback/
+2026-11-04 10:03:30,868 WARNING django.request Not Found: /assistant/feedback/
+ok
+test_history_endpoint (tests.test_assistant.ChatEndpointTests.test_history_endpoint) ... ok
+test_input_validation_and_rate_limit (tests.test_assistant.ChatEndpointTests.test_input_validation_and_rate_limit) ... 2026-11-04 10:03:30,945 WARNING django.request Bad Request: /assistant/chat/
+2026-11-04 10:03:30,946 WARNING django.request Bad Request: /assistant/chat/
+2026-11-04 10:03:30,946 WARNING django.request Bad Request: /assistant/chat/
+2026-11-04 10:03:31,015 WARNING django.request Too Many Requests: /assistant/chat/
+2026-11-04 10:03:31,015 WARNING django.request Too Many Requests: /assistant/chat/
+ok
+test_logged_in_user_id_recorded (tests.test_assistant.ChatEndpointTests.test_logged_in_user_id_recorded) ... ok
+test_unknown_question_creates_single_ticket (tests.test_assistant.ChatEndpointTests.test_unknown_question_creates_single_ticket) ... ok
+test_database_changes_drive_answers (tests.test_assistant.EngineTests.test_database_changes_drive_answers) ... ok
+test_error_code_explanations_from_database (tests.test_assistant.EngineTests.test_error_code_explanations_from_database) ... ok
+test_faq_questions_answered_from_database (tests.test_assistant.EngineTests.test_faq_questions_answered_from_database) ... ok
+test_help_documentation (tests.test_assistant.EngineTests.test_help_documentation) ... ok
+test_unknown_questions_need_ticket (tests.test_assistant.EngineTests.test_unknown_questions_need_ticket) ... ok
+test_chat_still_works_when_mongodb_down (tests.test_assistant.MongoFailureTests.test_chat_still_works_when_mongodb_down) ... 2026-11-04 10:03:32,295 ERROR inventory.app MongoDB message insert failed: ServerSelectionTimeoutError
+ok
+test_feedback_reports_unavailable (tests.test_assistant.MongoFailureTests.test_feedback_reports_unavailable) ... 2026-11-04 10:03:32,830 ERROR inventory.app MongoDB message insert failed: ServerSelectionTimeoutError
+2026-11-04 10:03:33,833 WARNING inventory.app MongoDB ping failed: ServerSelectionTimeoutError
+2026-11-04 10:03:33,833 ERROR django.request Service Unavailable: /assistant/feedback/
+ok
+test_health_reports_degraded (tests.test_assistant.MongoFailureTests.test_health_reports_degraded) ... 2026-11-04 10:03:34,365 WARNING inventory.app MongoDB ping failed: ServerSelectionTimeoutError
+ok
+test_admin_manages_all_tickets (tests.test_assistant.TicketCrudTests.test_admin_manages_all_tickets) ... ok
+test_resolved_ticket_cannot_be_edited_by_user (tests.test_assistant.TicketCrudTests.test_resolved_ticket_cannot_be_edited_by_user) ... ok
+test_user_ticket_lifecycle (tests.test_assistant.TicketCrudTests.test_user_ticket_lifecycle) ... 2026-11-04 10:03:36,175 WARNING django.request Forbidden (Permission denied): /tickets/TKT-20261104-0608D5/
+Traceback (most recent call last):
+  File "/opt/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/venv/lib/python3.13/site-packages/django/contrib/auth/decorators.py", line 60, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/opt/venv/lib/python3.13/site-packages/django/views/decorators/http.py", line 64, in inner
+    return func(request, *args, **kwargs)
+  File "/home/claude/inventory-management/support/views.py", line 101, in ticket_detail
+    raise PermissionDenied
+django.core.exceptions.PermissionDenied
+ok
+test_users_cannot_see_others_tickets (tests.test_assistant.TicketCrudTests.test_users_cannot_see_others_tickets) ... 2026-11-04 10:03:36,791 WARNING django.request Forbidden (Permission denied): /tickets/TKT-20261104-3BEE10/
+Traceback (most recent call last):
+  File "/opt/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/venv/lib/python3.13/site-packages/django/contrib/auth/decorators.py", line 60, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/opt/venv/lib/python3.13/site-packages/django/views/decorators/http.py", line 64, in inner
+    return func(request, *args, **kwargs)
+  File "/home/claude/inventory-management/support/views.py", line 92, in ticket_detail
+    ticket = _get_ticket_for(request, ticket_id)
+  File "/home/claude/inventory-management/support/views.py", line 47, in _get_ticket_for
+    raise PermissionDenied("You can only view your own tickets.")
+django.core.exceptions.PermissionDenied: You can only view your own tickets.
+ok
+test_connection_error_and_invalid_responses_fall_back (tests.test_infrastructure.CurrencyApiTests.test_connection_error_and_invalid_responses_fall_back) ... 2026-11-04 10:03:36,807 WARNING inventory.app Currency API unavailable (connection error); using fallback rates
+2026-11-04 10:03:36,808 WARNING inventory.app Currency API unavailable (response was not valid JSON); using fallback rates
+2026-11-04 10:03:36,808 WARNING inventory.app Currency API unavailable (response missing 'rates'); using fallback rates
+2026-11-04 10:03:36,808 WARNING inventory.app Currency API unavailable (invalid rate for EUR); using fallback rates
+2026-11-04 10:03:36,808 WARNING inventory.app Currency API unavailable (unexpected HTTP status 503); using fallback rates
+ok
+test_live_rates (tests.test_infrastructure.CurrencyApiTests.test_live_rates) ... ok
+test_real_unreachable_host_times_out_quickly (tests.test_infrastructure.CurrencyApiTests.test_real_unreachable_host_times_out_quickly) ... 2026-11-04 10:03:36,815 WARNING inventory.app Currency API unavailable (unexpected HTTP status 403); using fallback rates
+ok
+test_reports_page_works_when_api_down (tests.test_infrastructure.CurrencyApiTests.test_reports_page_works_when_api_down) ... 2026-11-04 10:03:37,170 WARNING inventory.app Currency API unavailable (connection error); using fallback rates
+ok
+test_timeout_falls_back (tests.test_infrastructure.CurrencyApiTests.test_timeout_falls_back) ... ok
+test_403_page (tests.test_infrastructure.ErrorPageTests.test_403_page) ... 2026-11-04 10:03:37,520 WARNING django.request Forbidden (Permission denied): /suppliers/
+Traceback (most recent call last):
+  File "/opt/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/venv/lib/python3.13/site-packages/django/contrib/auth/decorators.py", line 60, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/claude/inventory-management/accounts/roles.py", line 30, in wrapper
+    raise PermissionDenied("Administrator access is required.")
+django.core.exceptions.PermissionDenied: Administrator access is required.
+ok
+test_custom_404_page (tests.test_infrastructure.ErrorPageTests.test_custom_404_page) ... 2026-11-04 10:03:37,554 WARNING django.request Not Found: /definitely/not/here/
+ok
+test_custom_500_page (tests.test_infrastructure.ErrorPageTests.test_custom_500_page) ... 2026-11-04 10:03:37,588 ERROR django.request Internal Server Error: /boom/
+Traceback (most recent call last):
+  File "/opt/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/claude/inventory-management/tests/test_infrastructure.py", line 20, in boom
+    raise RuntimeError("test failure")
+RuntimeError: test failure
+ok
+test_diagnostics_route_returns_real_500_for_admin_only (tests.test_infrastructure.ErrorPageTests.test_diagnostics_route_returns_real_500_for_admin_only) ... 2026-11-04 10:03:37,956 WARNING django.request Forbidden (Permission denied): /diagnostics/trigger-500/
+Traceback (most recent call last):
+  File "/opt/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/venv/lib/python3.13/site-packages/django/contrib/auth/decorators.py", line 60, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/claude/inventory-management/accounts/roles.py", line 30, in wrapper
+    raise PermissionDenied("Administrator access is required.")
+django.core.exceptions.PermissionDenied: Administrator access is required.
+2026-11-04 10:03:38,259 ERROR django.request Internal Server Error: /diagnostics/trigger-500/
+Traceback (most recent call last):
+  File "/opt/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/venv/lib/python3.13/site-packages/django/contrib/auth/decorators.py", line 60, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/claude/inventory-management/accounts/roles.py", line 31, in wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/claude/inventory-management/core/views.py", line 61, in trigger_server_error
+    raise RuntimeError("Intentional error raised from the diagnostics route.")
+RuntimeError: Intentional error raised from the diagnostics route.
+ok
+test_missing_record_returns_404 (tests.test_infrastructure.ErrorPageTests.test_missing_record_returns_404) ... 2026-11-04 10:03:38,589 WARNING django.request Not Found: /products/987654/
+ok
+test_health_endpoint_checks_sql (tests.test_infrastructure.HealthAndLoggingTests.test_health_endpoint_checks_sql) ... ok
+test_health_unhealthy_when_sql_down (tests.test_infrastructure.HealthAndLoggingTests.test_health_unhealthy_when_sql_down) ... 2026-11-04 10:03:38,678 ERROR django.request Service Unavailable: /health/
+ok
+test_request_log_file_written (tests.test_infrastructure.HealthAndLoggingTests.test_request_log_file_written) ... ok
+test_request_logging_fields_and_no_secrets (tests.test_infrastructure.HealthAndLoggingTests.test_request_logging_fields_and_no_secrets) ... ok
+test_csrf_enforced_on_forms_and_chat (tests.test_infrastructure.SecurityTests.test_csrf_enforced_on_forms_and_chat) ... 2026-11-04 10:03:39,218 WARNING django.security.csrf Forbidden (CSRF cookie not set.): /accounts/login/
+2026-11-04 10:03:39,219 WARNING django.security.csrf Forbidden (CSRF cookie not set.): /assistant/chat/
+ok
+test_env_is_git_ignored (tests.test_infrastructure.SecurityTests.test_env_is_git_ignored) ... ok
+test_no_secrets_in_frontend (tests.test_infrastructure.SecurityTests.test_no_secrets_in_frontend) ... ok
+test_secret_key_required_in_production (tests.test_infrastructure.SecurityTests.test_secret_key_required_in_production) ... ok
+test_settings_come_from_environment (tests.test_infrastructure.SecurityTests.test_settings_come_from_environment) ... ok
+test_widget_present_on_public_and_private_pages (tests.test_infrastructure.WidgetOnEveryPageTests.test_widget_present_on_public_and_private_pages) ... ok
+test_invalid_credentials (tests.test_inventory.AuthenticationTests.test_invalid_credentials) ... ok
+test_login_and_logout (tests.test_inventory.AuthenticationTests.test_login_and_logout) ... ok
+test_logout_requires_post (tests.test_inventory.AuthenticationTests.test_logout_requires_post) ... 2026-11-04 10:03:40,876 WARNING django.request Method Not Allowed (GET): /accounts/logout/
+2026-11-04 10:03:40,876 WARNING django.request Method Not Allowed: /accounts/logout/
+ok
+test_registration_creates_staff_user_and_logs_in (tests.test_inventory.AuthenticationTests.test_registration_creates_staff_user_and_logs_in) ... ok
+test_restricted_pages_redirect_anonymous (tests.test_inventory.AuthenticationTests.test_restricted_pages_redirect_anonymous) ... ok
+test_staff_cannot_access_admin_features (tests.test_inventory.AuthenticationTests.test_staff_cannot_access_admin_features) ... 2026-11-04 10:03:41,445 WARNING django.request Forbidden (Permission denied): /products/new/
+Traceback (most recent call last):
+  File "/opt/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/venv/lib/python3.13/site-packages/django/contrib/auth/decorators.py", line 60, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/claude/inventory-management/accounts/roles.py", line 30, in wrapper
+    raise PermissionDenied("Administrator access is required.")
+django.core.exceptions.PermissionDenied: Administrator access is required.
+2026-11-04 10:03:41,458 WARNING django.request Forbidden (Permission denied): /products/2/delete/
+Traceback (most recent call last):
+  File "/opt/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/venv/lib/python3.13/site-packages/django/contrib/auth/decorators.py", line 60, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/claude/inventory-management/accounts/roles.py", line 30, in wrapper
+    raise PermissionDenied("Administrator access is required.")
+django.core.exceptions.PermissionDenied: Administrator access is required.
+2026-11-04 10:03:41,463 WARNING django.request Forbidden (Permission denied): /suppliers/
+Traceback (most recent call last):
+  File "/opt/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/venv/lib/python3.13/site-packages/django/contrib/auth/decorators.py", line 60, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/claude/inventory-management/accounts/roles.py", line 30, in wrapper
+    raise PermissionDenied("Administrator access is required.")
+django.core.exceptions.PermissionDenied: Administrator access is required.
+2026-11-04 10:03:41,468 WARNING django.request Forbidden (Permission denied): /reports/
+Traceback (most recent call last):
+  File "/opt/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/venv/lib/python3.13/site-packages/django/contrib/auth/decorators.py", line 60, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/claude/inventory-management/accounts/roles.py", line 30, in wrapper
+    raise PermissionDenied("Administrator access is required.")
+django.core.exceptions.PermissionDenied: Administrator access is required.
+2026-11-04 10:03:41,472 WARNING django.request Forbidden (Permission denied): /accounts/users/
+Traceback (most recent call last):
+  File "/opt/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/venv/lib/python3.13/site-packages/django/contrib/auth/decorators.py", line 60, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/claude/inventory-management/accounts/roles.py", line 30, in wrapper
+    raise PermissionDenied("Administrator access is required.")
+django.core.exceptions.PermissionDenied: Administrator access is required.
+2026-11-04 10:03:41,477 WARNING django.request Forbidden (Permission denied): /assistant/knowledge-base/
+Traceback (most recent call last):
+  File "/opt/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/venv/lib/python3.13/site-packages/django/contrib/auth/decorators.py", line 60, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/claude/inventory-management/accounts/roles.py", line 30, in wrapper
+    raise PermissionDenied("Administrator access is required.")
+django.core.exceptions.PermissionDenied: Administrator access is required.
+ok
+test_category_crud_and_search (tests.test_inventory.CategorySupplierReportTests.test_category_crud_and_search) ... ok
+test_reports_and_csv_export (tests.test_inventory.CategorySupplierReportTests.test_reports_and_csv_export) ... 2026-11-04 10:03:42,298 WARNING django.request Not Found: /reports/export/unknown/
+ok
+test_supplier_crud_and_purchase_history (tests.test_inventory.CategorySupplierReportTests.test_supplier_crud_and_purchase_history) ... ok
+test_add_product_with_opening_stock (tests.test_inventory.ProductTests.test_add_product_with_opening_stock) ... ok
+test_delete_product (tests.test_inventory.ProductTests.test_delete_product) ... ok
+test_duplicate_sku_rejected_case_insensitive (tests.test_inventory.ProductTests.test_duplicate_sku_rejected_case_insensitive) ... ok
+test_edit_product (tests.test_inventory.ProductTests.test_edit_product) ... ok
+test_image_upload (tests.test_inventory.ProductTests.test_image_upload) ... ok
+test_validation_errors (tests.test_inventory.ProductTests.test_validation_errors) ... ok
+test_category_and_stock_filters (tests.test_inventory.SearchFilterTests.test_category_and_stock_filters) ... ok
+test_search_by_name_and_sku (tests.test_inventory.SearchFilterTests.test_search_by_name_and_sku) ... ok
+test_sorting_and_pagination (tests.test_inventory.SearchFilterTests.test_sorting_and_pagination) ... ok
+test_dashboard_counts (tests.test_inventory.StockTests.test_dashboard_counts) ... ok
+test_low_stock_and_out_of_stock_alerts (tests.test_inventory.StockTests.test_low_stock_and_out_of_stock_alerts) ... ok
+test_negative_stock_prevented (tests.test_inventory.StockTests.test_negative_stock_prevented) ... ok
+test_staff_cannot_adjust_but_admin_can (tests.test_inventory.StockTests.test_staff_cannot_adjust_but_admin_can) ... ok
+test_stock_in_and_out (tests.test_inventory.StockTests.test_stock_in_and_out) ... ok
+test_zero_and_negative_quantities_rejected (tests.test_inventory.StockTests.test_zero_and_negative_quantities_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 75 tests in 18.973s
+
+OK
+Destroying test database for alias 'default' ('test_inventory')...
