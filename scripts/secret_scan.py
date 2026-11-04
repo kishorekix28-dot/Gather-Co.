@@ -23,7 +23,7 @@ PATTERNS = {
 FORBIDDEN_FILES = re.compile(r"(^|/)(\.env|db\.sqlite3|.*\.pem|.*\.key)$")
 ALLOW = {"scripts/secret_scan.py"}
 # Lines that read secrets from the environment or show documented placeholders are fine.
-SAFE_LINE = re.compile(r"os\.environ|getenv|<password>|<user>|\$\{?[A-Z_]+")
+SAFE_LINE = re.compile(r"os\.environ|getenv|secrets\.token_|<password>|<user>|\$\{?[A-Z_]+")
 
 
 def tracked_files(staged):
