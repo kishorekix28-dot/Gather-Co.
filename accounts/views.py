@@ -12,7 +12,7 @@ from inventory.services import log_activity
 
 from .forms import LoginForm, RegistrationForm, StyledPasswordChangeForm, UserRoleForm
 from .models import Profile
-from .roles import STAFF, admin_required
+from .roles import CUSTOMER, admin_required, is_customer
 
 
 class LoginView(auth_views.LoginView):
@@ -32,11 +32,11 @@ def register(request):
     form = RegistrationForm(request.POST or None)
     if request.method == "POST" and form.is_valid():
         user = form.save()
-        Profile.objects.update_or_create(user=user, defaults={"role": STAFF})
+        Profile.objects.update_or_create(user=user, defaults={"role": CUSTOMER})
         login(request, user)
-        log_activity(user, "Registered", f"New staff account {user.username}")
-        messages.success(request, "Welcome! Your staff account has been created.")
-        return redirect("inventory:dashboard")
+        log_activity(user, "Registered", f"New customer account {user.username}")
+        messages.success(request, "Welcome! Your account has been created – browse items and book them for your dates.")
+        return redirect("bookings:customer_dashboard")
     return render(request, "accounts/register.html", {"form": form})
 
 

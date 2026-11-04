@@ -15,10 +15,10 @@ logger = logging.getLogger("inventory.app")
 
 CACHE_KEY = "currency_rates_v1"
 CACHE_SECONDS = 60 * 60
-TARGET_CURRENCIES = ("EUR", "GBP", "INR", "JPY")
+TARGET_CURRENCIES = ("USD", "EUR", "GBP", "SGD")
 
-# Approximate reference rates (USD base) used only when the live API is unavailable.
-FALLBACK_RATES = {"EUR": 0.92, "GBP": 0.78, "INR": 84.0, "JPY": 150.0}
+# Approximate reference rates (INR base) used only when the live API is unavailable.
+FALLBACK_RATES = {"USD": 0.0119, "EUR": 0.0110, "GBP": 0.0093, "SGD": 0.0155}
 FALLBACK_DATE = "reference rates"
 
 

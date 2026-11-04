@@ -27,6 +27,7 @@ class ProductForm(StyledFormMixin, forms.ModelForm):
             "cost": forms.NumberInput(attrs={"step": "0.01", "min": "0"}),
         }
         help_texts = {"sku": "Unique stock keeping unit: letters, digits, dashes (e.g. ELEC-001)."}
+        labels = {"price": "Selling price (₹)", "cost": "Purchase cost (₹)"}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -97,7 +98,7 @@ class StockMovementForm(StyledFormMixin, forms.Form):
         help_text="Units to add/remove. For adjustments, enter the counted stock level.",
     )
     supplier = forms.ModelChoiceField(queryset=Supplier.objects.filter(is_active=True), required=False)
-    unit_cost = forms.DecimalField(min_value=0, max_digits=12, decimal_places=2, required=False)
+    unit_cost = forms.DecimalField(min_value=0, max_digits=12, decimal_places=2, required=False, label="Unit cost (₹)")
     reference = forms.CharField(max_length=80, required=False, help_text="PO / invoice / order number")
     note = forms.CharField(max_length=255, required=False)
 

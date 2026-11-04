@@ -1,6 +1,6 @@
 # StockPilot – Inventory Management System
 
-A production-ready inventory management web application built with **Django 5**, **Django REST Framework**, **PostgreSQL**, **MongoDB** and **Bootstrap 5**, featuring a database-backed AI help assistant available on every page.
+A production-ready inventory management and **item reservation** web application (prices in **Indian Rupees ₹**) built with **Django 5**, **Django REST Framework**, **PostgreSQL**, **MongoDB** and **Bootstrap 5**, featuring a database-backed AI help assistant available on every page.
 
 Developer: **Kishore**
 
@@ -25,9 +25,15 @@ StockPilot lets a business track products, stock movements, suppliers and report
 - Search by name/SKU/description, SKU search, category & stock filters, sort by price/quantity, pagination.
 - Reports: current inventory, stock-in, stock-out, low stock, valuation, product movement – all exportable to CSV (formula-injection safe).
 
+**Bookings & reservations**
+- Three roles: **Admin**, **Staff** and **Customer**. Public sign-up creates a Customer account.
+- Customer dashboard: pick a date range, see live availability per item (units free on every day of the range), book items with a note, track status, cancel.
+- Only **approved** bookings block units. Approval re-checks availability inside a database transaction with the product row locked, so the same units can never be double-booked on any day.
+- Staff: booking-request queue (approve / reject with a message), a month **booking calendar** showing blocked items and units per day (pending requests dashed), and a calendar + pending list on the staff dashboard.
+
 **Accounts & security**
 - Registration, login, logout (POST only), PBKDF2 password hashing, session management, password change.
-- Roles: **ADMIN** (full access, users, suppliers, reports, knowledge base, all tickets) and **STAFF** (view inventory, stock-in/out, own tickets, assistant).
+- Roles: **ADMIN** (full access, users, suppliers, reports, knowledge base, all tickets), **STAFF** (inventory, stock-in/out, booking approvals and calendar) and **CUSTOMER** (bookings, own tickets, assistant). Customers cannot open inventory pages or APIs.
 - CSRF on all forms and the chat API, HttpOnly/secure cookies, HSTS, SSL redirect, secrets only in environment variables, API throttling and chat rate limiting.
 
 **Assistant & support**
@@ -41,14 +47,14 @@ StockPilot lets a business track products, stock movements, suppliers and report
 - Custom 400/403/404/500 pages with correct status codes, **Return Home** and **Ask Assistant** buttons.
 - Request logging middleware (timestamp, method, path without query string, status, duration) to console + rotating `logs/requests.log`; no bodies, cookies or credentials.
 - `GET /health/` – checks SQL and MongoDB separately; `healthy`, `degraded` (MongoDB down, HTTP 200) or `unhealthy` (SQL down, HTTP 503).
-- Third-party **Frankfurter (ECB) currency API** converts inventory valuation to EUR/GBP/INR/JPY on the Reports page with a 5 s timeout, error/invalid-payload handling, logging, caching and fallback reference rates.
+- Third-party **Frankfurter (ECB) currency API** converts the ₹ inventory valuation to USD/EUR/GBP/SGD on the Reports page with a 5 s timeout, error/invalid-payload handling, logging, caching and fallback reference rates.
 
 ## 3. Technology stack
 
 | Layer | Technology |
 |---|---|
 | Backend | Python 3.12, Django 5.1, Django REST Framework 3.15 |
-| Frontend | HTML5, CSS3, vanilla JavaScript, Bootstrap 5.3, Bootstrap Icons, Chart.js 4 (all vendored, no CDN) |
+| Frontend | HTML5, CSS3 (dark "ops console" theme), vanilla JavaScript, Bootstrap 5.3, Bootstrap Icons, Chart.js 4, Inter + JetBrains Mono (all vendored, no CDN) |
 | SQL database | PostgreSQL 16 (production) / SQLite (local fallback) |
 | Chat & feedback | MongoDB (pymongo) |
 | Server | Gunicorn + WhiteNoise |
@@ -85,6 +91,7 @@ Stock changes go exclusively through `inventory.services.record_transaction`, wh
 | `inventory.Product` | name, sku (unique, upper-case), category, supplier, price, cost, quantity (≥ 0 constraint), min_stock_level, image, description |
 | `inventory.StockTransaction` | product, type (IN/OUT/ADJ), quantity, quantity_change, before/after, unit_cost, supplier, reference, note, user, created_at |
 | `inventory.ActivityLog` | user, action, description, created_at |
+| `bookings.Booking` | booking_id, customer, product, quantity, start_date, end_date, status (pending/approved/rejected/cancelled), notes, reviewed_by/at |
 | `suppliers.Supplier` | name, contact_person, email, phone, address, website, notes, is_active |
 | `support.Ticket` | ticket_id, user, subject, description, status, priority, source, admin_response, conversation_id, question_hash, created/updated |
 | `assistant.FAQ` | question, answer, category, keywords, is_active, created/updated (13 seeded) |
@@ -150,18 +157,20 @@ Open http://127.0.0.1:8000 and log in as `admin` or `staff` with the passwords y
 | POST | `/assistant/chat/` · `/assistant/feedback/` | CSRF-protected JSON |
 | GET | `/assistant/history/` | Current session |
 | GET | `/health/` | Public |
+| GET/POST | `/bookings/` · `/bookings/new/` · `/bookings/mine/` | Customers |
+| GET/POST | `/bookings/manage/` · `/bookings/calendar/?month=YYYY-MM` · `/bookings/<id>/approve/` · `/bookings/<id>/reject/` | Staff |
 
 ## 10. Testing
 
 ```bash
-# Django tests (75) – use PostgreSQL + MongoDB for full coverage
+# Django tests (90) – use PostgreSQL + MongoDB for full coverage
 set DATABASE_URL=postgresql://...   &  set MONGODB_URI=mongodb://...
 python manage.py test tests
 
 # All pre-commit checks (check, migrations, tests, check --deploy, collectstatic, secret scan)
 bash scripts/run_checks.sh
 
-# Playwright end-to-end (30 tests) against a running server
+# Playwright end-to-end (32 tests) against a running server
 pip install -r requirements-dev.txt && playwright install chromium
 set E2E_BASE_URL=http://127.0.0.1:8000
 set E2E_ADMIN_PASSWORD=...  &  set E2E_STAFF_PASSWORD=...
@@ -169,7 +178,7 @@ set E2E_MONGODB_URI=mongodb://127.0.0.1:27017  &  set E2E_MONGODB_DB=inventory_a
 pytest --html=docs/test-reports/playwright-report.html --self-contained-html
 ```
 
-Latest results (PostgreSQL 16 + MongoDB 7, production settings with Gunicorn): **75/75 Django tests passed**, **30/30 Playwright tests passed**. Evidence is in [`docs/test-reports/`](docs/test-reports/).
+Latest results (PostgreSQL 16 + MongoDB 7, production settings with Gunicorn): **90/90 Django tests passed**, **32/32 Playwright tests passed** (including the full customer-books → staff-approves → calendar-blocks flow). Evidence is in [`docs/test-reports/`](docs/test-reports/).
 
 ## 11. Deployment (Render)
 

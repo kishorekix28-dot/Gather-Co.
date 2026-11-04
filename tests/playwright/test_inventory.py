@@ -46,7 +46,7 @@ def test_add_edit_delete_product(admin_page, unique):
     page.fill("#id_price", "59.00")
     page.click("form[data-testid=product-form] button[type=submit]")
     expect(page.locator("h1")).to_have_text(f"Edited {sku}")
-    expect(page.get_by_text("$59.00")).to_be_visible()
+    expect(page.get_by_text("₹59.00")).to_be_visible()
     # delete
     page.click("[data-testid=delete-product]")
     page.click("[data-testid=confirm-delete]")
@@ -119,7 +119,7 @@ def test_search_filter_sort_paginate(admin_page):
     for status in page.locator("[data-testid=product-table] tbody tr td:nth-child(7)").all_text_contents():
         assert "Low stock" in status
     page.goto(f"{BASE_URL}/products/?sort=-price")
-    prices = [float(p.strip("$").replace(",", "")) for p in
+    prices = [float(p.strip().lstrip("₹").replace(",", "")) for p in
               page.locator("[data-testid=product-table] tbody tr td:nth-child(4)").all_text_contents()]
     assert prices == sorted(prices, reverse=True)
     page.goto(f"{BASE_URL}/products/?sort=quantity")

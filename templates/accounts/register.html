@@ -2,7 +2,7 @@
 {% block title %}Create account{% endblock %}
 {% block public_content %}
 <div class="auth-wrap"><div class="auth-card" style="max-width:560px">
-  <div class="text-center mb-4"><h1 class="h3">Create your account</h1><p class="text-muted">New accounts get the <strong>Staff</strong> role. An administrator can upgrade it.</p></div>
+  <div class="text-center mb-4"><h1 class="h3">Create your account</h1><p class="text-muted">Create a <strong>customer</strong> account to check availability and book items. Staff accounts are granted by an administrator.</p></div>
   <div class="card"><div class="card-body p-4">
     <form method="post" novalidate data-testid="register-form">{% csrf_token %}
       {% include "partials/form_errors.html" %}

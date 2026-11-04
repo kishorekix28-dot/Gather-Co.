@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load money %}
+{% block title %}New booking{% endblock %}
+{% block content %}
+<div class="row justify-content-center"><div class="col-xl-8">
+  <nav class="breadcrumb"><a href="{% url 'bookings:customer_dashboard' %}">Dashboard</a>&nbsp;/&nbsp;<span class="text-muted">New booking</span></nav>
+  <div class="page-header"><div><h1>Reserve an item</h1><p>Requests are confirmed by staff. Approved bookings block the units for every day of your dates; availability is re-checked at approval.</p></div></div>
+  {% if selected %}
+  <div class="card mb-3" data-testid="availability-panel"><div class="card-body d-flex flex-wrap gap-3 align-items-center">
+    <span class="stat-icon tone-sky"><i class="bi bi-box-seam"></i></span>
+    <div class="flex-grow-1"><div class="fw-semibold text-dark">{{ selected.name }} <span class="sku ms-1">{{ selected.sku }}</span></div><div class="small text-muted">{{ selected.price|inr }} per unit · {{ selected.quantity }} in stock</div></div>
+    {% if availability %}<div class="text-end"><div class="stat-label">Free {{ availability.start|date:"d M" }} → {{ availability.end|date:"d M" }}</div><div class="stat-value {% if availability.free %}text-success{% else %}text-danger{% endif %}" data-testid="free-units">{{ availability.free }}</div></div>{% endif %}
+  </div></div>
+  {% endif %}
+  <form method="post" novalidate data-loading class="card" data-testid="booking-form">{% csrf_token %}
+    <div class="card-body">
+      {% include "partials/form_errors.html" %}
+      <div class="row g-3">
+        {% include "partials/field.html" with field=form.product %}
+        {% include "partials/field.html" with field=form.start_date col="col-md-4" %}
+        {% include "partials/field.html" with field=form.end_date col="col-md-4" %}
+        {% include "partials/field.html" with field=form.quantity col="col-md-4" %}
+        {% include "partials/field.html" with field=form.note %}
+      </div>
+    </div>
+    <div class="card-body border-top d-flex justify-content-between flex-wrap gap-2 align-items-center">
+      <button class="btn btn-sm btn-light" type="button" id="checkAvail" data-testid="check-availability"><i class="bi bi-arrow-repeat"></i> Check availability for these dates</button>
+      <div class="d-flex gap-2"><a class="btn btn-light" href="{% url 'bookings:customer_dashboard' %}">Cancel</a><button class="btn btn-primary" type="submit"><i class="bi bi-send"></i> Request booking</button></div>
+    </div>
+  </form>
+</div></div>
+{% endblock %}
+{% block extra_js %}<script>
+(function(){const f=document.querySelector('[data-testid=booking-form]');if(!f)return;const p=f.querySelector('#id_product'),s=f.querySelector('#id_start_date'),e=f.querySelector('#id_end_date');
+function reload(){if(!p.value)return;const u=new URL(location.href);u.searchParams.set('product',p.value);if(s.value)u.searchParams.set('start',s.value);if(e.value)u.searchParams.set('end',e.value);location.href=u.toString();}
+p.addEventListener('change',reload);const c=document.getElementById('checkAvail');c&&c.addEventListener('click',reload);})();
+</script>{% endblock %}

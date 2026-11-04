@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     "suppliers",
     "support",
     "assistant",
+    "bookings",
     "api",
 ]
 
@@ -121,7 +122,7 @@ AI_TIMEOUT_SECONDS = float(os.environ.get("AI_TIMEOUT_SECONDS", "8"))
 # --- Third-party currency API ---
 CURRENCY_API_URL = os.environ.get("CURRENCY_API_URL", "https://api.frankfurter.app/latest")
 CURRENCY_API_TIMEOUT = float(os.environ.get("CURRENCY_API_TIMEOUT", "5"))
-BASE_CURRENCY = os.environ.get("BASE_CURRENCY", "USD")
+BASE_CURRENCY = os.environ.get("BASE_CURRENCY", "INR")
 
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},

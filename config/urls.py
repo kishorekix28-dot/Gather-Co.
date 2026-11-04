@@ -12,6 +12,7 @@ urlpatterns = [
     path("accounts/", include("accounts.urls")),
     path("suppliers/", include("suppliers.urls")),
     path("tickets/", include("support.urls")),
+    path("bookings/", include("bookings.urls")),
     path("faq/", faq_page, name="faq"),
     path("assistant/", include("assistant.urls")),
     path("api/", include("api.urls")),

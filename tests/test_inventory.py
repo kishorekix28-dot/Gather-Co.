@@ -10,14 +10,14 @@ from .helpers import PASSWORD, make_product, make_user
 
 
 class AuthenticationTests(TestCase):
-    def test_registration_creates_staff_user_and_logs_in(self):
+    def test_registration_creates_customer_user_and_logs_in(self):
         resp = self.client.post(reverse("accounts:register"), {
             "username": "newstaff", "email": "new@example.com", "first_name": "New", "last_name": "Staff",
             "password1": "Very$ecure-2026", "password2": "Very$ecure-2026"})
-        self.assertRedirects(resp, reverse("inventory:dashboard"))
+        self.assertRedirects(resp, reverse("bookings:customer_dashboard"))
         from django.contrib.auth.models import User
         user = User.objects.get(username="newstaff")
-        self.assertEqual(user.profile.role, "STAFF")
+        self.assertEqual(user.profile.role, "CUSTOMER")
         self.assertTrue(user.password.startswith(("pbkdf2_", "argon2", "bcrypt")), "password must be hashed")
         self.assertNotEqual(user.password, "Very$ecure-2026")
 

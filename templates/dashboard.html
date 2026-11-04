@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load static humanize %}
+{% load money static humanize %}
 {% block title %}Dashboard{% endblock %}
 {% block content %}
 <div class="page-header">
@@ -14,12 +14,45 @@
 </div>
 
 <div class="row g-3 mb-3" data-testid="stat-cards">
-  <div class="col-6 col-md-4 col-xxl-2"><a href="{% url 'inventory:product_list' %}" class="card stat-card"><span class="stat-icon tone-indigo"><i class="bi bi-box-seam"></i></span><div><div class="stat-label">Products</div><div class="stat-value" data-testid="stat-products">{{ totals.total_products|intcomma }}</div></div></a></div>
-  <div class="col-6 col-md-4 col-xxl-2"><div class="card stat-card"><span class="stat-icon tone-sky"><i class="bi bi-stack"></i></span><div><div class="stat-label">Units in stock</div><div class="stat-value">{{ totals.total_units|intcomma }}</div></div></div></div>
-  <div class="col-6 col-md-4 col-xxl-2"><div class="card stat-card"><span class="stat-icon tone-green"><i class="bi bi-currency-dollar"></i></span><div><div class="stat-label">Inventory value</div><div class="stat-value">${{ totals.total_value|floatformat:0|intcomma }}</div></div></div></div>
-  <div class="col-6 col-md-4 col-xxl-2"><a href="{% url 'inventory:product_list' %}?stock=low" class="card stat-card"><span class="stat-icon tone-amber"><i class="bi bi-exclamation-triangle"></i></span><div><div class="stat-label">Low stock</div><div class="stat-value" data-testid="stat-low">{{ totals.low_stock }}</div></div></a></div>
-  <div class="col-6 col-md-4 col-xxl-2"><a href="{% url 'inventory:product_list' %}?stock=out" class="card stat-card"><span class="stat-icon tone-red"><i class="bi bi-x-octagon"></i></span><div><div class="stat-label">Out of stock</div><div class="stat-value" data-testid="stat-out">{{ totals.out_of_stock }}</div></div></a></div>
-  <div class="col-6 col-md-4 col-xxl-2"><a href="{% url 'inventory:category_list' %}" class="card stat-card"><span class="stat-icon tone-violet"><i class="bi bi-tags"></i></span><div><div class="stat-label">Categories</div><div class="stat-value">{{ totals.total_categories }}</div></div></a></div>
+  <div class="col-6 col-md-4"><a href="{% url 'inventory:product_list' %}" class="card stat-card"><span class="stat-icon tone-indigo"><i class="bi bi-box-seam"></i></span><div><div class="stat-label">Products</div><div class="stat-value" data-testid="stat-products">{{ totals.total_products|intcomma }}</div></div></a></div>
+  <div class="col-6 col-md-4"><div class="card stat-card"><span class="stat-icon tone-sky"><i class="bi bi-stack"></i></span><div><div class="stat-label">Units in stock</div><div class="stat-value">{{ totals.total_units|intcomma }}</div></div></div></div>
+  <div class="col-6 col-md-4"><div class="card stat-card"><span class="stat-icon tone-green"><i class="bi bi-currency-rupee"></i></span><div><div class="stat-label">Inventory value</div><div class="stat-value">{{ totals.total_value|inr:0 }}</div></div></div></div>
+  <div class="col-6 col-md-4"><a href="{% url 'inventory:product_list' %}?stock=low" class="card stat-card"><span class="stat-icon tone-amber"><i class="bi bi-exclamation-triangle"></i></span><div><div class="stat-label">Low stock</div><div class="stat-value" data-testid="stat-low">{{ totals.low_stock }}</div></div></a></div>
+  <div class="col-6 col-md-4"><a href="{% url 'inventory:product_list' %}?stock=out" class="card stat-card"><span class="stat-icon tone-red"><i class="bi bi-x-octagon"></i></span><div><div class="stat-label">Out of stock</div><div class="stat-value" data-testid="stat-out">{{ totals.out_of_stock }}</div></div></a></div>
+  <div class="col-6 col-md-4"><a href="{% url 'inventory:category_list' %}" class="card stat-card"><span class="stat-icon tone-violet"><i class="bi bi-tags"></i></span><div><div class="stat-label">Categories</div><div class="stat-value">{{ totals.total_categories }}</div></div></a></div>
+</div>
+
+<div class="row g-3 mb-3" data-testid="booking-widgets">
+  <div class="col-xl-7">
+    <div class="card h-100">
+      <div class="card-header"><h2><i class="bi bi-calendar3 me-1"></i> Booking calendar · {{ booking_cal.first|date:"F Y" }}</h2><a class="small" href="{% url 'bookings:calendar' %}">Full calendar</a></div>
+      <div class="card-body p-2">
+        <div class="cal-legend mb-2 px-1"><span class="l-ok">blocked</span><span class="l-wait">pending</span><span class="l-today">today</span></div>
+        {% include "partials/calendar_grid.html" with cal=booking_cal mini=True %}
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-5">
+    <div class="card mb-3">
+      <div class="card-header"><h2><i class="bi bi-inboxes me-1"></i> Pending booking requests</h2><a class="small" href="{% url 'bookings:manage' %}">Manage</a></div>
+      <ul class="list-group list-group-flush">
+        {% for b in pending_bookings %}
+        <li class="list-group-item d-flex align-items-center gap-2 py-2">
+          <div class="flex-grow-1 min-w-0"><a class="fw-semibold text-dark text-truncate d-block" href="{{ b.get_absolute_url }}">{{ b.product.name }} ×{{ b.quantity }}</a><div class="small text-muted mono">{{ b.start_date|date:"d M" }} → {{ b.end_date|date:"d M" }} · {{ b.customer.username }}</div></div>
+          <form method="post" action="{% url 'bookings:review' b.booking_id 'approve' %}">{% csrf_token %}<input type="hidden" name="next" value="{% url 'inventory:dashboard' %}"><button class="btn btn-sm btn-success" type="submit" aria-label="Approve {{ b.booking_id }}"><i class="bi bi-check2"></i></button></form>
+          <form method="post" action="{% url 'bookings:review' b.booking_id 'reject' %}">{% csrf_token %}<input type="hidden" name="next" value="{% url 'inventory:dashboard' %}"><button class="btn btn-sm btn-soft-danger" type="submit" aria-label="Reject {{ b.booking_id }}"><i class="bi bi-x"></i></button></form>
+        </li>
+        {% empty %}<li class="list-group-item text-muted small py-3"><i class="bi bi-check2-all text-success me-1"></i> No pending requests.</li>{% endfor %}
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-header"><h2><i class="bi bi-truck me-1"></i> Out on booking today</h2></div>
+      <ul class="list-group list-group-flush">
+        {% for b in todays_bookings %}<li class="list-group-item d-flex justify-content-between small"><a href="{{ b.get_absolute_url }}">{{ b.product.name }} ×{{ b.quantity }}</a><span class="text-muted mono">{{ b.customer.username }} · until {{ b.end_date|date:"d M" }}</span></li>
+        {% empty %}<li class="list-group-item text-muted small py-3">No items are reserved today.</li>{% endfor %}
+      </ul>
+    </div>
+  </div>
 </div>
 
 <div class="row g-3 mb-3">

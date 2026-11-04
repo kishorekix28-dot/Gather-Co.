@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load humanize %}
+{% load money humanize %}
 {% block title %}Reports{% endblock %}
 {% block content %}
 <div class="page-header"><div><h1>Inventory reports</h1><p>Analyse stock and export any report as CSV.</p></div>
@@ -7,7 +7,7 @@
 
 <div class="row g-3 mb-3">
   <div class="col-lg-7"><div class="card h-100"><div class="card-body">
-    <div class="d-flex justify-content-between flex-wrap gap-2"><div><div class="stat-label">Inventory valuation (cost)</div><div class="stat-value">${{ totals.total_value|floatformat:2|intcomma }}</div><div class="small text-muted">Retail value ${{ totals.retail_value|floatformat:2|intcomma }} · {{ totals.total_units|intcomma }} units</div></div>
+    <div class="d-flex justify-content-between flex-wrap gap-2"><div><div class="stat-label">Inventory valuation (cost)</div><div class="stat-value">{{ totals.total_value|inr }}</div><div class="small text-muted">Retail value {{ totals.retail_value|inr }} · {{ totals.total_units|intcomma }} units</div></div>
     <span class="stat-icon tone-green"><i class="bi bi-cash-stack"></i></span></div>
     <div class="row g-2 mt-3">
       <div class="col-4"><div class="p-2 rounded-3 bg-light"><div class="small text-muted">Products</div><div class="fw-bold">{{ totals.total_products }}</div></div></div>

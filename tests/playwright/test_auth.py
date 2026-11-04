@@ -14,13 +14,17 @@ def test_registration_login_logout(page, unique):
     page.fill("#id_password1", "E2e!Strong-Pass-99")
     page.fill("#id_password2", "E2e!Strong-Pass-99")
     page.click("form[data-testid=register-form] button[type=submit]")
-    expect(page).to_have_url(re.compile(r"/dashboard/$"))
-    expect(page.get_by_text("Your staff account has been created")).to_be_visible()
+    expect(page).to_have_url(re.compile(r"/bookings/$"))
+    expect(page.get_by_text("Your account has been created")).to_be_visible()
     page.click("button[aria-label='Account menu']")
     page.click("[data-testid=logout]")
     expect(page).to_have_url(re.compile(r"/accounts/login/$"))
-    login(page, (f"e2e{unique.lower()}", "E2e!Strong-Pass-99"))
-    expect(page.locator("h1")).to_contain_text("Welcome back")
+    page.goto(f"{BASE_URL}/accounts/login/")
+    page.fill("#id_username", f"e2e{unique.lower()}")
+    page.fill("#id_password", "E2e!Strong-Pass-99")
+    page.click("form[data-testid=login-form] button[type=submit]")
+    expect(page).to_have_url(re.compile(r"/bookings/$"))
+    expect(page.locator("h1")).to_contain_text("Hi,")
 
 
 def test_invalid_credentials(page):

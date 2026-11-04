@@ -1,0 +1,1 @@
+<span class="badge-soft {% if b.status == 'APPROVED' %}badge-in{% elif b.status == 'PENDING' %}badge-low{% elif b.status == 'REJECTED' %}badge-out{% else %}badge-neutral{% endif %}" data-testid="booking-status">{{ b.get_status_display }}</span>

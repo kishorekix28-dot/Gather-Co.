@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load humanize %}
+{% load money humanize %}
 {% block title %}{{ product.name }}{% endblock %}
 {% block content %}
 <nav class="breadcrumb"><a href="{% url 'inventory:product_list' %}">Products</a>&nbsp;/&nbsp;<span class="text-muted">{{ product.sku }}</span></nav>
@@ -24,9 +24,9 @@
       <ul class="list-group list-group-flush">
         <li class="list-group-item d-flex justify-content-between"><span class="text-muted">Quantity on hand</span><strong data-testid="product-quantity">{{ product.quantity }}</strong></li>
         <li class="list-group-item d-flex justify-content-between"><span class="text-muted">Minimum level</span><strong>{{ product.min_stock_level }}</strong></li>
-        <li class="list-group-item d-flex justify-content-between"><span class="text-muted">Selling price</span><strong>${{ product.price }}</strong></li>
-        <li class="list-group-item d-flex justify-content-between"><span class="text-muted">Purchase cost</span><strong>${{ product.cost }}</strong></li>
-        <li class="list-group-item d-flex justify-content-between"><span class="text-muted">Stock value (cost)</span><strong>${{ product.stock_value|floatformat:2|intcomma }}</strong></li>
+        <li class="list-group-item d-flex justify-content-between"><span class="text-muted">Selling price</span><strong>{{ product.price|inr }}</strong></li>
+        <li class="list-group-item d-flex justify-content-between"><span class="text-muted">Purchase cost</span><strong>{{ product.cost|inr }}</strong></li>
+        <li class="list-group-item d-flex justify-content-between"><span class="text-muted">Stock value (cost)</span><strong>{{ product.stock_value|inr }}</strong></li>
         <li class="list-group-item d-flex justify-content-between"><span class="text-muted">Supplier</span><strong>{% if product.supplier and is_admin_user %}<a href="{{ product.supplier.get_absolute_url }}">{{ product.supplier }}</a>{% else %}{{ product.supplier|default:"—" }}{% endif %}</strong></li>
       </ul>
     </div>

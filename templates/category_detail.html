@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load money %}
 {% block title %}{{ category.name }}{% endblock %}
 {% block content %}
 <nav class="breadcrumb"><a href="{% url 'inventory:category_list' %}">Categories</a>&nbsp;/&nbsp;<span class="text-muted">{{ category.name }}</span></nav>
@@ -8,7 +9,7 @@
   {% if page_obj.object_list %}
   <div class="table-responsive"><table class="table table-hover">
     <thead><tr><th>Product</th><th>SKU</th><th>Supplier</th><th class="text-end">Price</th><th class="text-end">Qty</th><th>Status</th></tr></thead>
-    <tbody>{% for p in page_obj %}<tr><td><a class="row-link" href="{{ p.get_absolute_url }}">{{ p.name }}</a></td><td><span class="sku">{{ p.sku }}</span></td><td>{{ p.supplier|default:"—" }}</td><td class="text-end">${{ p.price }}</td><td class="text-end fw-semibold">{{ p.quantity }}</td><td>{% include "partials/status_badge.html" %}</td></tr>{% endfor %}</tbody>
+    <tbody>{% for p in page_obj %}<tr><td><a class="row-link" href="{{ p.get_absolute_url }}">{{ p.name }}</a></td><td><span class="sku">{{ p.sku }}</span></td><td>{{ p.supplier|default:"—" }}</td><td class="text-end">{{ p.price|inr }}</td><td class="text-end fw-semibold">{{ p.quantity }}</td><td>{% include "partials/status_badge.html" %}</td></tr>{% endfor %}</tbody>
   </table></div>
   {% include "partials/pagination.html" %}
   {% else %}<div class="empty-state"><i class="bi bi-box"></i><h3>No products in this category yet</h3></div>{% endif %}

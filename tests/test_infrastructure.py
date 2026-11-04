@@ -75,7 +75,8 @@ class WidgetOnEveryPageTests(TestCase):
         self.client.login(username="boss", password=PASSWORD)
         for url in ("/dashboard/", "/products/", "/categories/", "/transactions/", "/transactions/new/",
                     "/suppliers/", "/reports/", "/faq/", "/tickets/", "/tickets/new/", "/accounts/profile/",
-                    "/accounts/users/", "/assistant/knowledge-base/", "/products/new/"):
+                    "/accounts/users/", "/assistant/knowledge-base/", "/products/new/", "/bookings/manage/",
+                    "/bookings/calendar/"):
             resp = self.client.get(url)
             self.assertEqual(resp.status_code, 200, url)
             self.assertContains(resp, 'id="assistant-widget"', msg_prefix=url)
@@ -124,12 +125,12 @@ class CurrencyApiTests(TestCase):
 
     def test_live_rates(self):
         fake = mock.Mock(status_code=200)
-        fake.json.return_value = {"date": "2026-11-03", "rates": {"EUR": 0.9, "GBP": 0.8, "INR": 83.5, "JPY": 151.2}}
+        fake.json.return_value = {"date": "2026-11-03", "rates": {"USD": 0.012, "EUR": 0.011, "GBP": 0.0093, "SGD": 0.016}}
         with mock.patch("core.currency.requests.get", return_value=fake) as get:
             data = currency.convert_valuation(100)
         self.assertEqual(get.call_args.kwargs["timeout"], 5.0)
         self.assertEqual(data["source"], "live")
-        self.assertEqual(str(data["converted"][0]["amount"]), "90.00")
+        self.assertEqual(str(data["converted"][0]["amount"]), "1.20")
 
     def test_timeout_falls_back(self):
         with mock.patch("core.currency.requests.get", side_effect=requests.Timeout()), \

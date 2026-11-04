@@ -1,9 +1,10 @@
 {% load static %}<!doctype html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="StockPilot – professional inventory management system">
+  <meta name="theme-color" content="#070b14">
   <title>{% block title %}Dashboard{% endblock %} · {{ APP_NAME }}</title>
   <link rel="icon" href="{% static 'images/favicon.svg' %}" type="image/svg+xml">
   <link rel="stylesheet" href="{% static 'vendor/bootstrap/bootstrap.min.css' %}">
@@ -15,11 +16,19 @@
 {% if user.is_authenticated %}
 <div class="app-shell">
   <aside class="sidebar" id="sidebar" aria-label="Main navigation">
-    <a class="brand" href="{% url 'inventory:dashboard' %}">
+    <a class="brand" href="/">
       <span class="brand-mark"><i class="bi bi-box-seam"></i></span>
-      <span>{{ APP_NAME }}<small>Inventory</small></span>
+      <span>{{ APP_NAME }}<small>ops console</small></span>
     </a>
     {% with u=request.resolver_match.url_name ns=request.resolver_match.namespace %}
+    {% if user_role == "CUSTOMER" %}
+    <div class="nav-section">Bookings</div>
+    <nav class="nav flex-column">
+      <a class="nav-link {% if u == 'customer_dashboard' %}active{% endif %}" href="{% url 'bookings:customer_dashboard' %}"><i class="bi bi-grid-1x2"></i> My dashboard</a>
+      <a class="nav-link {% if u == 'create' and ns == 'bookings' %}active{% endif %}" href="{% url 'bookings:create' %}"><i class="bi bi-calendar-plus"></i> New booking</a>
+      <a class="nav-link {% if u == 'mine' or u == 'detail' and ns == 'bookings' %}active{% endif %}" href="{% url 'bookings:mine' %}"><i class="bi bi-journal-check"></i> My bookings</a>
+    </nav>
+    {% else %}
     <div class="nav-section">Overview</div>
     <nav class="nav flex-column">
       <a class="nav-link {% if u == 'dashboard' %}active{% endif %}" href="{% url 'inventory:dashboard' %}"><i class="bi bi-grid-1x2"></i> Dashboard</a>
@@ -31,6 +40,12 @@
       <a class="nav-link {% if u == 'reports' %}active{% endif %}" href="{% url 'inventory:reports' %}"><i class="bi bi-bar-chart-line"></i> Reports</a>
       {% endif %}
     </nav>
+    <div class="nav-section">Reservations</div>
+    <nav class="nav flex-column">
+      <a class="nav-link {% if u == 'manage' %}active{% endif %}" href="{% url 'bookings:manage' %}" data-testid="nav-bookings"><i class="bi bi-inboxes"></i> Booking requests{% if pending_booking_count %}<span class="count">{{ pending_booking_count }}</span>{% endif %}</a>
+      <a class="nav-link {% if u == 'calendar' %}active{% endif %}" href="{% url 'bookings:calendar' %}"><i class="bi bi-calendar3"></i> Booking calendar</a>
+    </nav>
+    {% endif %}
     <div class="nav-section">Help &amp; Support</div>
     <nav class="nav flex-column">
       <a class="nav-link {% if u == 'faq' %}active{% endif %}" href="{% url 'faq' %}"><i class="bi bi-question-circle"></i> FAQ</a>
@@ -47,11 +62,16 @@
   <div class="main">
     <header class="topbar">
       <button class="icon-btn d-lg-none" type="button" data-sidebar-toggle aria-label="Open menu"><i class="bi bi-list"></i></button>
+      {% if user_role != "CUSTOMER" %}
       <form class="search d-none d-md-block" action="{% url 'inventory:product_list' %}" method="get" role="search">
         <i class="bi bi-search"></i>
-        <input class="form-control" type="search" name="q" placeholder="Search products or SKU…" aria-label="Search products" value="{{ request.GET.q|default:'' }}">
+        <input class="form-control" type="search" name="q" placeholder="search products / sku…" aria-label="Search products" value="{{ request.GET.q|default:'' }}">
       </form>
+      {% else %}
+      <span class="mono small text-muted d-none d-md-inline"><span style="color:var(--sp-green)">●</span> customer portal</span>
+      {% endif %}
       <div class="ms-auto d-flex align-items-center gap-2">
+        {% if user_role != "CUSTOMER" %}
         <div class="dropdown">
           <button class="icon-btn" type="button" data-bs-toggle="dropdown" aria-label="Stock alerts" data-testid="alerts-bell">
             <i class="bi bi-bell"></i>{% if stock_alert_count %}<span class="badge-dot">{{ stock_alert_count }}</span>{% endif %}
@@ -69,6 +89,7 @@
             {% if stock_alert_count %}<a class="dropdown-item text-center small py-2 border-top" href="{% url 'inventory:product_list' %}?stock=low">View all low-stock products</a>{% endif %}
           </div>
         </div>
+        {% endif %}
         <div class="dropdown">
           <button class="btn btn-light border-0 d-flex align-items-center gap-2 px-1" data-bs-toggle="dropdown" aria-label="Account menu">
             <span class="avatar">{{ user.username|slice:":1"|upper }}</span>
@@ -78,6 +99,7 @@
           <ul class="dropdown-menu dropdown-menu-end shadow border-0">
             <li><a class="dropdown-item" href="{% url 'accounts:profile' %}"><i class="bi bi-person me-2"></i>My profile</a></li>
             <li><a class="dropdown-item" href="{% url 'support:list' %}"><i class="bi bi-life-preserver me-2"></i>My tickets</a></li>
+            {% if user_role == "CUSTOMER" %}<li><a class="dropdown-item" href="{% url 'bookings:mine' %}"><i class="bi bi-journal-check me-2"></i>My bookings</a></li>{% endif %}
             <li><hr class="dropdown-divider"></li>
             <li>
               <form method="post" action="{% url 'accounts:logout' %}">{% csrf_token %}

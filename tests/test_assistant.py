@@ -33,6 +33,7 @@ def mongo_available():
 class EngineTests(TestCase):
     FAQ_QUESTIONS = {
         "How do I add a product?": "How do I add a new product?",
+        "How do I book an item?": "How do I book or reserve items?",
         "How do I update stock?": "How do I record stock-in?",
         "How do I check low-stock products?": "How do I check low-stock products?",
         "How do I export inventory?": "How do I export inventory reports?",

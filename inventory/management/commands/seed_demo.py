@@ -56,6 +56,14 @@ PRODUCTS = [
 ]
 
 
+USD_TO_INR = Decimal("83")
+
+
+def to_inr(usd):
+    """Demo catalogue prices are listed in USD above and stored in Indian Rupees."""
+    return (Decimal(str(usd)) * USD_TO_INR).quantize(Decimal("1"))
+
+
 class Command(BaseCommand):
     help = "Populate the database with demo inventory data."
 
@@ -94,8 +102,8 @@ class Command(BaseCommand):
         now = timezone.now()
         for name, sku, cat, sup, price, cost, target, min_level in PRODUCTS:
             product = Product.objects.create(
-                name=name, sku=sku, category=cats[cat], supplier=sups[sup], price=Decimal(str(price)),
-                cost=Decimal(str(cost)), quantity=0, min_stock_level=min_level,
+                name=name, sku=sku, category=cats[cat], supplier=sups[sup], price=to_inr(price),
+                cost=to_inr(cost), quantity=0, min_stock_level=min_level,
                 description=f"{name} – stocked item in {cat.lower()}.",
             )
             # Build a plausible 6-month history that ends at the target quantity.

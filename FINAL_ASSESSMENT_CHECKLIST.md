@@ -4,7 +4,7 @@ Developer: Kishore · Verified: 4 November 2026
 
 A requirement is marked **[x]** only after it was verified by an automated test or a recorded check.
 Verification environment: PostgreSQL 16 + MongoDB 7.0, `DEBUG=False`, Gunicorn, WhiteNoise, Chromium (Playwright 1.63).
-Results: **75/75 Django tests passed**, **30/30 Playwright tests passed** (`docs/test-reports/`).
+Results: **90/90 Django tests passed**, **32/32 Playwright tests passed** (`docs/test-reports/`).
 
 | No. | Requirement | Status |
 | --- | --------------------------------------------------- | ------ |
@@ -22,6 +22,11 @@ Results: **75/75 Django tests passed**, **30/30 Playwright tests passed** (`docs
 | 12  | Extra third-party call with timeout and fallback    | [x] |
 | 13  | README with live address and improvements           | [x] |
 | 14  | GitHub commits and push verified                    | [x] |
+
+## Additional features (4 Nov 2026 update)
+- **Indian Rupees:** all prices, costs and valuations use ₹ with Indian digit grouping (`core/templatetags/money.py`); existing data converted by migration `inventory/0002_convert_prices_to_inr`; currency API now converts INR → USD/EUR/GBP/SGD. Tests: `tests/test_bookings.py::RupeeFormattingTests`.
+- **Customer bookings + staff approval + calendar:** `bookings/` app. Tests: `tests/test_bookings.py` (15 tests incl. double-booking prevention) and `tests/playwright/test_bookings.py` (customer books → staff approves → calendar shows the item → dates blocked for customers → cancel frees them; customer blocked from staff pages).
+- **Dark "ops console" UI theme:** `static/css/app.css`; screenshots in `docs/screenshots/`.
 
 ---
 

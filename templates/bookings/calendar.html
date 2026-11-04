@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Booking calendar{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div><h1>Booking calendar</h1><p>Approved bookings block units on each day; dashed entries are still pending.</p></div>
+  <div class="d-flex gap-2 align-items-center">
+    <a class="btn btn-light" href="?month={{ cal.prev|date:'Y-m' }}" aria-label="Previous month" data-testid="cal-prev"><i class="bi bi-chevron-left"></i></a>
+    <span class="mono fw-semibold text-dark px-2" data-testid="cal-month">{{ cal.first|date:"F Y" }}</span>
+    <a class="btn btn-light" href="?month={{ cal.next|date:'Y-m' }}" aria-label="Next month" data-testid="cal-next"><i class="bi bi-chevron-right"></i></a>
+    <a class="btn btn-light" href="?">Today</a>
+  </div>
+</div>
+<div class="row g-3">
+  <div class="col-xl-9">
+    <div class="card"><div class="card-body p-2 p-md-3">
+      <div class="cal-legend mb-2 px-1"><span class="l-ok">approved · blocked</span><span class="l-wait">pending</span><span class="l-today">today</span><span>{{ cal.approved_count }} approved · {{ cal.pending_count }} pending this month</span></div>
+      <div class="table-responsive">{% include "partials/calendar_grid.html" %}</div>
+    </div></div>
+  </div>
+  <div class="col-xl-3">
+    <div class="card h-100">
+      <div class="card-header"><h2>Upcoming reservations</h2></div>
+      <div class="card-body py-1">
+        {% for b in upcoming %}
+        <a class="activity-item text-reset" href="{{ b.get_absolute_url }}">
+          <span class="activity-dot tone-green"><i class="bi bi-calendar-check"></i></span>
+          <div class="min-w-0"><div class="fw-semibold small text-truncate text-dark">{{ b.product.name }} ×{{ b.quantity }}</div><div class="small text-muted mono">{{ b.start_date|date:"d M" }} → {{ b.end_date|date:"d M" }} · {{ b.customer.username }}</div></div>
+        </a>
+        {% empty %}<div class="empty-state"><i class="bi bi-calendar"></i><h3>Nothing booked</h3></div>{% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

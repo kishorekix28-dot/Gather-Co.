@@ -4,7 +4,7 @@ from rest_framework import generics, permissions
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 
-from accounts.roles import is_admin
+from accounts.roles import is_admin, is_staff_member
 from assistant.models import FAQ, ErrorCode
 from inventory.models import Product
 from inventory.selectors import inventory_totals
@@ -17,6 +17,11 @@ from .serializers import ErrorCodeSerializer, FAQSerializer, ProductSerializer, 
 class IsAdminRole(permissions.BasePermission):
     def has_permission(self, request, view):
         return bool(request.user and request.user.is_authenticated and is_admin(request.user))
+
+
+class IsStaffRole(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return bool(request.user and request.user.is_authenticated and is_staff_member(request.user))
 
 
 class ReadPublicWriteAdmin(permissions.BasePermission):
@@ -96,7 +101,7 @@ def error_search(request):
 # ---------------------------------------------------- Inventory (secured)
 class ProductList(generics.ListAPIView):
     serializer_class = ProductSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsStaffRole]
 
     def get_queryset(self):
         return filter_products(self.request.query_params)
@@ -104,12 +109,12 @@ class ProductList(generics.ListAPIView):
 
 class ProductDetail(generics.RetrieveAPIView):
     serializer_class = ProductSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsStaffRole]
     queryset = Product.objects.select_related("category")
 
 
 @api_view(["GET"])
-@permission_classes([permissions.IsAuthenticated])
+@permission_classes([IsStaffRole])
 def inventory_summary(request):
     totals = inventory_totals()
     totals["total_value"] = str(totals["total_value"])

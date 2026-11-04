@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load money %}
+{% block title %}{{ booking.booking_id }}{% endblock %}
+{% block content %}
+<nav class="breadcrumb">{% if is_staff_view %}<a href="{% url 'bookings:manage' %}">Booking requests</a>{% else %}<a href="{% url 'bookings:mine' %}">My bookings</a>{% endif %}&nbsp;/&nbsp;<span class="text-muted">{{ booking.booking_id }}</span></nav>
+<div class="page-header">
+  <div><h1>{{ booking.product.name }} ×{{ booking.quantity }}</h1><p><span class="mono" data-testid="booking-id">{{ booking.booking_id }}</span> · {% include "partials/booking_badge.html" with b=booking %}</p></div>
+  {% if booking.can_cancel %}<form method="post" action="{% url 'bookings:cancel' booking.booking_id %}">{% csrf_token %}<button class="btn btn-soft-danger" type="submit" data-testid="cancel-booking"><i class="bi bi-x-circle"></i> Cancel booking</button></form>{% endif %}
+</div>
+<div class="row g-3">
+  <div class="col-lg-7">
+    <div class="card"><ul class="list-group list-group-flush">
+      <li class="list-group-item d-flex justify-content-between"><span class="text-muted">Item</span><span><span class="sku me-1">{{ booking.product.sku }}</span>{{ booking.product.name }}</span></li>
+      <li class="list-group-item d-flex justify-content-between"><span class="text-muted">Dates</span><span class="mono">{{ booking.start_date|date:"D d M Y" }} → {{ booking.end_date|date:"D d M Y" }} ({{ booking.days }} day{{ booking.days|pluralize }})</span></li>
+      <li class="list-group-item d-flex justify-content-between"><span class="text-muted">Quantity</span><span class="mono">{{ booking.quantity }}</span></li>
+      <li class="list-group-item d-flex justify-content-between"><span class="text-muted">Item value</span><span class="mono">{{ booking.estimated_value|inr }}</span></li>
+      <li class="list-group-item d-flex justify-content-between"><span class="text-muted">Customer</span><span>{{ booking.customer.get_full_name|default:booking.customer.username }}</span></li>
+      <li class="list-group-item d-flex justify-content-between"><span class="text-muted">Requested</span><span class="mono small">{{ booking.created_at|date:"d M Y H:i" }}</span></li>
+      <li class="list-group-item"><span class="text-muted d-block mb-1">Customer note</span>{{ booking.note|default:"—" }}</li>
+      <li class="list-group-item"><span class="text-muted d-block mb-1">Staff response</span><span data-testid="staff-note">{{ booking.staff_note|default:"—" }}</span>{% if booking.reviewed_by %}<div class="small text-muted mt-1 mono">by {{ booking.reviewed_by.username }} · {{ booking.reviewed_at|date:"d M Y H:i" }}</div>{% endif %}</li>
+    </ul></div>
+  </div>
+  <div class="col-lg-5">
+    {% if is_staff_view and booking.status == 'PENDING' %}
+    <div class="card" data-testid="review-panel">
+      <div class="card-header"><h2>Review request</h2></div>
+      <div class="card-body">
+        <p class="small mb-3">Other approved bookings leave <strong class="{% if free_excluding >= booking.quantity %}text-success{% else %}text-danger{% endif %} mono">{{ free_excluding }}</strong> unit(s) free on the busiest day of this range ({{ booking.product.quantity }} in stock).</p>
+        <form method="post" action="{% url 'bookings:review' booking.booking_id 'approve' %}" class="mb-2">{% csrf_token %}
+          <input type="hidden" name="next" value="{{ booking.get_absolute_url }}">
+          <label class="form-label" for="note-a">Message to customer (optional)</label>
+          <input class="form-control mb-2" id="note-a" name="note" maxlength="255" placeholder="e.g. Pick up from warehouse gate 2">
+          <button class="btn btn-success w-100" type="submit" data-testid="approve-booking"><i class="bi bi-check2-circle"></i> Approve &amp; block dates</button>
+        </form>
+        <form method="post" action="{% url 'bookings:review' booking.booking_id 'reject' %}">{% csrf_token %}
+          <input type="hidden" name="next" value="{{ booking.get_absolute_url }}">
+          <input class="form-control mb-2" name="note" maxlength="255" placeholder="Reason for rejection (optional)" aria-label="Rejection reason">
+          <button class="btn btn-soft-danger w-100" type="submit" data-testid="reject-booking"><i class="bi bi-x-octagon"></i> Reject</button>
+        </form>
+      </div>
+    </div>
+    {% else %}
+    <div class="terminal">
+      <div class="dim"># booking status</div>
+      {% if booking.status == 'APPROVED' %}<div>✔ {{ booking.quantity }} unit(s) blocked {{ booking.start_date|date:"d M" }} → {{ booking.end_date|date:"d M Y" }}</div>
+      {% elif booking.status == 'PENDING' %}<div style="color:var(--sp-amber)">… awaiting staff approval</div>
+      {% elif booking.status == 'REJECTED' %}<div style="color:var(--sp-red)">✖ request rejected</div>
+      {% else %}<div class="dim">✖ cancelled</div>{% endif %}
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,15 @@
+<table class="cal {% if mini %}cal-mini{% endif %}" data-testid="booking-calendar">
+  <thead><tr>{% for d in "MTWTFSS" %}<th>{% if forloop.counter == 1 %}Mon{% elif forloop.counter == 2 %}Tue{% elif forloop.counter == 3 %}Wed{% elif forloop.counter == 4 %}Thu{% elif forloop.counter == 5 %}Fri{% elif forloop.counter == 6 %}Sat{% else %}Sun{% endif %}</th>{% endfor %}</tr></thead>
+  <tbody>
+  {% for week in cal.weeks %}<tr>
+    {% for c in week %}
+    <td class="{% if not c.in_month %}out{% endif %} {% if c.is_today %}today{% endif %} {% if c.approved %}busy{% endif %}" data-date="{{ c.date|date:'Y-m-d' }}" title="{% for b in c.approved %}{{ b.product.name }} ×{{ b.quantity }} ({{ b.customer.username }}) · {% endfor %}">
+      <div class="day-num"><span>{{ c.date.day }}</span>{% if c.units %}<span class="day-units">{{ c.units }}u</span>{% elif c.pending %}<span class="day-units" style="color:var(--sp-amber);border-color:rgba(251,191,36,.4)">?</span>{% endif %}</div>
+      {% for b in c.approved|slice:":3" %}<a class="ev ok" href="{{ b.get_absolute_url }}">{{ b.product.name }} ×{{ b.quantity }}</a>{% endfor %}
+      {% for b in c.pending|slice:":2" %}<a class="ev wait" href="{{ b.get_absolute_url }}">{{ b.product.name }} ×{{ b.quantity }}</a>{% endfor %}
+      {% if c.approved|length > 3 %}<span class="more">+{{ c.approved|length|add:"-3" }} more</span>{% endif %}
+    </td>
+    {% endfor %}
+  </tr>{% endfor %}
+  </tbody>
+</table>

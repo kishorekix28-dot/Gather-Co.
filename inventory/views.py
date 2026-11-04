@@ -5,9 +5,10 @@ from django.core.paginator import Paginator
 from django.db.models import Count, F, Q, Sum
 from django.db.models.functions import Coalesce
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone
 from django.views.decorators.http import require_http_methods, require_POST
 
-from accounts.roles import admin_required, is_admin
+from accounts.roles import admin_required, is_admin, is_customer, staff_required
 from suppliers.models import Supplier
 
 from .forms import CategoryForm, ProductForm, StockMovementForm
@@ -23,12 +24,18 @@ PRODUCT_SORTS = {
 
 def home(request):
     if request.user.is_authenticated:
-        return redirect("inventory:dashboard")
+        return redirect("bookings:customer_dashboard" if is_customer(request.user) else "inventory:dashboard")
     return render(request, "home.html")
 
 
 @login_required
 def dashboard(request):
+    if is_customer(request.user):
+        return redirect("bookings:customer_dashboard")
+    from bookings.models import Booking
+    from bookings.services import month_calendar
+
+    today = timezone.localdate()
     totals = inventory_totals()
     monthly = monthly_statistics(6)
     categories = list(category_valuation()[:8])
@@ -38,6 +45,11 @@ def dashboard(request):
         "recent_activity": ActivityLog.objects.select_related("user")[:8],
         "low_stock_products": Product.objects.needs_attention().select_related("category").order_by("quantity")[:6],
         "monthly": monthly,
+        "booking_cal": month_calendar(today.year, today.month),
+        "pending_bookings": Booking.objects.filter(status=Booking.PENDING)
+        .select_related("product", "customer").order_by("start_date")[:5],
+        "todays_bookings": Booking.objects.filter(status=Booking.APPROVED, start_date__lte=today, end_date__gte=today)
+        .select_related("product", "customer"),
         "chart_data": {
             "months": [m["label"] for m in monthly],
             "stock_in": [m["stock_in"] for m in monthly],
@@ -75,7 +87,7 @@ def filter_products(params):
     return qs.order_by(PRODUCT_SORTS.get(sort, "name"), "id")
 
 
-@login_required
+@staff_required
 def product_list(request):
     qs = filter_products(request.GET)
     page = Paginator(qs, 10).get_page(request.GET.get("page"))
@@ -90,7 +102,7 @@ def product_list(request):
     })
 
 
-@login_required
+@staff_required
 def product_detail(request, pk):
     product = get_object_or_404(Product.objects.select_related("category", "supplier"), pk=pk)
     return render(request, "product_detail.html", {
@@ -147,7 +159,7 @@ def product_delete(request, pk):
 
 
 # -------------------------------------------------------------- categories
-@login_required
+@staff_required
 def category_list(request):
     q = request.GET.get("q", "").strip()
     cats = Category.objects.annotate(
@@ -158,7 +170,7 @@ def category_list(request):
     return render(request, "categories.html", {"categories": cats, "q": q})
 
 
-@login_required
+@staff_required
 def category_detail(request, pk):
     category = get_object_or_404(Category, pk=pk)
     products = category.products.select_related("supplier").order_by("name")
@@ -199,7 +211,7 @@ def category_delete(request, pk):
 
 
 # ------------------------------------------------------------ transactions
-@login_required
+@staff_required
 def transaction_list(request):
     qs = StockTransaction.objects.select_related("product", "user", "supplier")
     ttype = request.GET.get("type", "")
@@ -222,7 +234,7 @@ def transaction_list(request):
     })
 
 
-@login_required
+@staff_required
 @require_http_methods(["GET", "POST"])
 def transaction_create(request):
     initial = {}

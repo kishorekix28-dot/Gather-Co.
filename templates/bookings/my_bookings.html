@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load money %}
+{% block title %}My bookings{% endblock %}
+{% block content %}
+<div class="page-header"><div><h1>My bookings</h1><p>Track every reservation request and its approval status.</p></div>
+  <a class="btn btn-primary" href="{% url 'bookings:create' %}"><i class="bi bi-calendar-plus"></i> New booking</a></div>
+<div class="card">
+  <div class="card-header"><form class="filter-bar" method="get"><select class="form-select" name="status" data-autosubmit aria-label="Status"><option value="">All statuses</option>{% for v, l in statuses %}<option value="{{ v }}" {% if status == v %}selected{% endif %}>{{ l }}</option>{% endfor %}</select></form></div>
+  {% if page_obj.object_list %}
+  <div class="table-responsive"><table class="table table-hover" data-testid="my-bookings">
+    <thead><tr><th>Booking</th><th>Item</th><th class="text-end">Qty</th><th>Dates</th><th class="text-end">Value</th><th>Status</th><th></th></tr></thead>
+    <tbody>{% for b in page_obj %}<tr>
+      <td><a class="row-link mono small" href="{{ b.get_absolute_url }}">{{ b.booking_id }}</a></td>
+      <td>{{ b.product.name }}</td><td class="text-end mono">{{ b.quantity }}</td>
+      <td class="mono small text-nowrap">{{ b.start_date|date:"d M" }} → {{ b.end_date|date:"d M Y" }} <span class="text-muted">({{ b.days }}d)</span></td>
+      <td class="text-end mono">{{ b.estimated_value|inr }}</td>
+      <td>{% include "partials/booking_badge.html" %}</td>
+      <td class="text-end">{% if b.can_cancel %}<form method="post" action="{% url 'bookings:cancel' b.booking_id %}">{% csrf_token %}<button class="btn btn-sm btn-soft-danger" type="submit">Cancel</button></form>{% endif %}</td>
+    </tr>{% endfor %}</tbody>
+  </table></div>
+  {% include "partials/pagination.html" %}
+  {% else %}<div class="empty-state"><i class="bi bi-journal"></i><h3>No bookings found</h3></div>{% endif %}
+</div>
+{% endblock %}
