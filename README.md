@@ -7,7 +7,7 @@ Developer: **Kishore**
 | | |
 |---|---|
 | **Live HTTPS address** | _Not deployed yet – see [Deployment status](#14-deployment-status)_ |
-| **GitHub repository** | https://github.com/jkishoresubha-crypto/Gather-Co. |
+| **GitHub repository** | https://github.com/kishorekix28-dot/Gather-Co. |
 
 ---
 
@@ -104,7 +104,7 @@ FAQs, error codes and help articles are seeded by data migration `assistant/0002
 ## 6. Installation
 
 ```bash
-git clone https://github.com/jkishoresubha-crypto/Gather-Co..git inventory-management
+git clone https://github.com/kishorekix28-dot/Gather-Co..git inventory-management
 cd inventory-management
 python -m venv .venv
 .venv\Scripts\activate          # Windows  (source .venv/bin/activate on macOS/Linux)

@@ -91,6 +91,6 @@ Results: **75/75 Django tests passed**, **30/30 Playwright tests passed** (`docs
 - `README.md` contains overview, features, stack, architecture, database, installation, env vars, API, testing, deployment, screenshots, limitations and an Improvements section. The live address will be added after deployment.
 
 ### 14. GitHub commits and push – see push status
-- Repository: https://github.com/jkishoresubha-crypto/Gather-Co. (branch `main`, history preserved, no force push).
+- Repository: https://github.com/kishorekix28-dot/Gather-Co. (branch `main`, history preserved, no force push).
 - Commits: `a94c69f` Replace Gather & Co rental app with inventory management system · `fc705e0` Refine secret scan · `0a6cd07` Add Django and Playwright test suites · `6e3c331` Add Render deployment configuration · `29ca800` Add README, screenshots and test evidence · plus this checklist.
 - Previous uncommitted edits to the old README/settings were preserved with `git stash` (`stash@{0}`).
