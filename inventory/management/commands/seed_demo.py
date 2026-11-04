@@ -63,6 +63,8 @@ class Command(BaseCommand):
         parser.add_argument("--admin-password", default=os.environ.get("DEMO_ADMIN_PASSWORD"))
         parser.add_argument("--staff-password", default=os.environ.get("DEMO_STAFF_PASSWORD"))
         parser.add_argument("--reset", action="store_true", help="Delete existing inventory data first.")
+        parser.add_argument("--data-only", action="store_true",
+                            help="Seed inventory data only; do not create demo user accounts.")
 
     @transaction.atomic
     def handle(self, *args, **opts):
@@ -72,8 +74,11 @@ class Command(BaseCommand):
             Category.objects.all().delete()
             Supplier.objects.all().delete()
 
-        admin = self._user("admin", "admin@stockpilot.example", opts["admin_password"], "ADMIN", "Kishore", "Admin")
-        staff = self._user("staff", "staff@stockpilot.example", opts["staff_password"], "STAFF", "Priya", "Staff")
+        if opts["data_only"]:
+            admin = staff = None
+        else:
+            admin = self._user("admin", "admin@stockpilot.example", opts["admin_password"], "ADMIN", "Kishore", "Admin")
+            staff = self._user("staff", "staff@stockpilot.example", opts["staff_password"], "STAFF", "Priya", "Staff")
 
         cats = {name: Category.objects.get_or_create(name=name, defaults={"description": d})[0]
                 for name, d in CATEGORIES.items()}
